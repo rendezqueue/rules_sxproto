@@ -1,0 +1,18 @@
+
+syntax = "proto3";
+
+message GroceryListItem {
+  string name = 1;
+  int32 amount = 2;
+  bool variety = 3;
+  float budget = 4;
+  oneof expected_cost {
+    float expected_cost_each = 5;
+    float expected_cost_total = 6;
+  }
+  repeated string favorites = 7;
+}
+
+message GroceryList {
+  repeated GroceryListItem items = 1;
+}

@@ -1,0 +1,74 @@
+name: Bazel
+on: [push, pull_request]
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ubuntu-latest, macos-latest, windows-latest]
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+    - name: Bazel Setup
+      uses: jwlawson/actions-setup-bazel@v1
+      with:
+        bazel-version: '5'
+
+    - name: Bazel Version
+      run: bazel --version
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Build
+      run: bazel build //...
+
+    - name: Test
+      run: bazel test --test_timeout 10 //...
+
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: Test Results (${{ matrix.platform }})
+        path: |
+          bazel-testlogs*/**/test.log
+          bazel-bin*/example/*
+          bazel-bin*/src/*
+          !bazel-bin*/**/_objs/
+          !bazel-bin*/**/*.cppmap
+          !bazel-bin*/**/*.params
+          !bazel-bin*/**/*.runfiles*
+
+
+  coverage:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+    steps:
+    - name: Bazel Setup
+      uses: jwlawson/actions-setup-bazel@v1
+      with:
+        bazel-version: '5'
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Coverage
+      run: >
+        bazel coverage
+        --instrument_test_targets
+        --instrumentation_filter="^//..."
+        --combined_report=lcov
+        --
+        //...
+
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: bazel-out/_coverage/_coverage_report.dat

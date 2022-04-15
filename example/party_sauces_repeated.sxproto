@@ -1,0 +1,25 @@
+; Same data as party_sauces.sxproto.
+; Instead of using arrays to express the repeated fields,
+; this file uses the "repeated" style allowed by textproto.
+
+(items
+  (name "dip")
+  (amount 1)
+  (expected_cost_total 6.50)
+  (budget 10)
+  (favorites "hummus")
+  (favorites"garlic"))
+
+(items
+  (name "hot sauce")
+  (amount 3)
+  (variety true)
+  (expected_cost_each 6.50)
+  (budget 20)
+  (favorites "yuzu")
+  (favorites "kiss")
+  (favorites "fire")
+  (favorites "bee")
+  (favorites "sunshine"))
+
+; vim: ft=lisp lw=nil

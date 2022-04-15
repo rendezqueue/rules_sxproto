@@ -1,0 +1,62 @@
+load("@fildesh//:def.bzl", "fildesh_test")
+
+fildesh_test(
+    name = "nonempty_test",
+    srcs = ["nonempty_test.fildesh"],
+    named_inputs = {
+        "result_filename": "//example:party_sauces",
+    },
+)
+
+fildesh_test(
+    name = "compare_repeated_test",
+    srcs = ["compare_repeated_test.fildesh"],
+    named_inputs = {
+        "expect_filename": "//example:party_sauces",
+        "result_filename": "//example:party_sauces_repeated",
+    },
+)
+
+fildesh_test(
+    name = "compile_textproto_test",
+    srcs = ["compile_textproto_test.fildesh"],
+    aliases = {
+        "protoc": "@protobuf//:protoc",
+    },
+    named_inputs = {
+        "binaryproto_filename": "//example:party_sauces",
+        "textproto_filename": "party_sauces.textproto",
+        "descriptor_set_filename": "//example:grocery_proto",
+    },
+)
+
+fildesh_test(
+    name = "compile_repeated_textproto_test",
+    srcs = ["compile_textproto_test.fildesh"],
+    aliases = {
+        "protoc": "@protobuf//:protoc",
+    },
+    named_inputs = {
+        "binaryproto_filename": "//example:party_sauces",
+        "textproto_filename": "party_sauces_repeated.textproto",
+        "descriptor_set_filename": "//example:grocery_proto",
+    },
+)
+
+cc_test(
+    name = "parse_test",
+    srcs = [
+        "parse_test.c",
+        "//src:sxproto2textproto.c",
+    ],
+    defines = ["UNIT_TESTING"],
+    deps = [
+        "@fildesh//:fildesh_lib",
+    ],
+    data = [
+        "//example:party_sauces.sxproto",
+    ],
+    args = [
+        "$(location //example:party_sauces.sxproto)",
+    ],
+)

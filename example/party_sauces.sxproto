@@ -1,0 +1,18 @@
+((items)
+ (()
+  (name "dip")
+  (amount 1)
+  (expected_cost_total 6.50)
+  (budget 10)
+  ((favorites) "hummus" "garlic"))
+ (()
+  (name "hot sauce")
+  (amount 3)
+  (variety true)
+  (expected_cost_each 6.50)
+  (budget 20)
+  ((favorites)
+   "yuzu" "kiss" "fire"
+   "bee" "sunshine")))
+
+; vim: ft=lisp lw=nil

@@ -1,0 +1,5 @@
+
+|< zec -x $(XA textproto_filename)
+|- protoc --descriptor_set_in $(XA descriptor_set_filename) --encode GroceryList
+|- cmp $(XA binaryproto_filename) -
+|> stdout

@@ -1,0 +1,5 @@
+zec -o $(OF empty) / /
+zec -o $(OF result) -x $(XA result_filename)
+
+$(O? status) cmp $(XF empty) $(XF result)
+expect_failure -x? $(XF status)

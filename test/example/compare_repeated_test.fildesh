@@ -1,0 +1,2 @@
+|< cmp $(XA expect_filename) $(XA result_filename)
+|> stdout

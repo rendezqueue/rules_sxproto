@@ -1,0 +1,7 @@
+
+alias(
+    name = "sxproto2textproto",
+    actual = "//src:sxproto2textproto",
+    visibility = ["//visibility:public"],
+)
+

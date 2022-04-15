@@ -1,0 +1,16 @@
+
+exports_files([
+    "sxproto2textproto.c",
+], visibility = [
+    "//test:__subpackages__",
+])
+
+cc_binary(
+    name = "sxproto2textproto",
+    srcs = ["sxproto2textproto.c"],
+    deps = [
+        "@fildesh//:fildesh_lib",
+    ],
+    visibility = ["//:__pkg__"],
+)
+

@@ -1,0 +1,31 @@
+load("//sxproto:defs.bzl", "sxproto_data")
+load("@rules_proto//proto:defs.bzl", "proto_library")
+
+proto_library(
+    name = "grocery_proto",
+    srcs = ["grocery.proto"],
+    visibility = ["//visibility:public"],
+)
+
+sxproto_data(
+    name = "party_sauces",
+    src = "party_sauces.sxproto",
+    proto_deps = ["grocery_proto"],
+    proto_message = "GroceryList",
+    visibility = ["//visibility:public"],
+)
+
+sxproto_data(
+    name = "party_sauces_repeated",
+    src = "party_sauces_repeated.sxproto",
+    proto_deps = ["grocery_proto"],
+    proto_message = "GroceryList",
+    visibility = ["//visibility:public"],
+)
+
+exports_files([
+    "party_sauces.sxproto",
+    "party_sauces_repeated.sxproto",
+], visibility = [
+    "//test/example:__pkg__",
+])

@@ -14,11 +14,7 @@ def _sxproto_data_impl(ctx):
       tools = [ctx.executable._sxproto2textproto],
    )
 
-  binaryproto_file = None
-  if ctx.outputs.out:
-    binaryproto_file = ctx.outputs.out
-  else:
-    binaryproto_file = ctx.actions.declare_file(ctx.label.name + ".binaryproto")
+  binaryproto_file = ctx.actions.declare_file(ctx.label.name + ".binaryproto")
   args = ctx.actions.args()
   args.add_joined(["stdin=open_readonly", textproto_file], join_with = ":")
   args.add_joined(["stdout=open_writeonly", binaryproto_file], join_with = ":")
@@ -48,10 +44,6 @@ sxproto_data = rule(
             mandatory = True,
             allow_single_file = True,
             doc = "The .sxproto file to compile.",
-        ),
-        "out": attr.output(
-            mandatory = False,
-            doc = "The .binaryproto file to write.",
         ),
         "proto_deps": attr.label_list(
             mandatory = True,

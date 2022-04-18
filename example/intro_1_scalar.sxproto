@@ -1,0 +1,6 @@
+; An integer.
+(i 5)
+; A float.
+(f 5.5)
+; A string.
+(s "hello")

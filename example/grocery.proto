@@ -5,14 +5,15 @@ message GroceryListItem {
   string name = 1;
   int32 amount = 2;
   bool variety = 3;
-  float budget = 4;
-  oneof expected_cost {
-    float expected_cost_each = 5;
-    float expected_cost_total = 6;
+  oneof expect_cost_union {
+    float expect_cost = 4;
+    float expect_unit_cost = 5;
   }
-  repeated string favorites = 7;
+  repeated string favorites = 6;
+  GroceryListItem alternative = 7;
 }
 
 message GroceryList {
-  repeated GroceryListItem items = 1;
+  float budget = 1;
+  repeated GroceryListItem items = 2;
 }

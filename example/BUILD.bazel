@@ -2,30 +2,67 @@ load("//sxproto:defs.bzl", "sxproto_data")
 load("@rules_proto//proto:defs.bzl", "proto_library")
 
 proto_library(
+    name = "intro_proto",
+    srcs = ["intro.proto"],
+)
+
+sxproto_data(
+    name = "intro_1_scalar",
+    src = "intro_1_scalar.sxproto",
+    proto_deps = ["intro_proto"],
+    proto_message = "IntroMessage",
+)
+sxproto_data(
+    name = "intro_2_message",
+    src = "intro_2_message.sxproto",
+    proto_deps = ["intro_proto"],
+    proto_message = "IntroMessage",
+)
+sxproto_data(
+    name = "intro_3_empty_message",
+    src = "intro_3_empty_message.sxproto",
+    proto_deps = ["intro_proto"],
+    proto_message = "IntroMessage",
+)
+sxproto_data(
+    name = "intro_4_repeated",
+    src = "intro_4_repeated.sxproto",
+    proto_deps = ["intro_proto"],
+    proto_message = "IntroMessage",
+)
+sxproto_data(
+    name = "intro_5_array",
+    src = "intro_5_array.sxproto",
+    proto_deps = ["intro_proto"],
+    proto_message = "IntroMessage",
+)
+
+
+proto_library(
     name = "grocery_proto",
     srcs = ["grocery.proto"],
     visibility = ["//visibility:public"],
 )
 
 sxproto_data(
-    name = "party_sauces",
-    src = "party_sauces.sxproto",
+    name = "popcorn",
+    src = "popcorn.sxproto",
     proto_deps = ["grocery_proto"],
-    proto_message = "GroceryList",
+    proto_message = "GroceryListItem",
     visibility = ["//visibility:public"],
 )
 
 sxproto_data(
-    name = "party_sauces_repeated",
-    src = "party_sauces_repeated.sxproto",
+    name = "sauces",
+    src = "sauces.sxproto",
     proto_deps = ["grocery_proto"],
     proto_message = "GroceryList",
     visibility = ["//visibility:public"],
 )
 
 exports_files([
-    "party_sauces.sxproto",
-    "party_sauces_repeated.sxproto",
+    "popcorn.sxproto",
+    "sauces.sxproto",
 ], visibility = [
     "//test/example:__pkg__",
 ])

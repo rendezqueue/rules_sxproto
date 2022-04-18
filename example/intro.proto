@@ -1,0 +1,10 @@
+syntax = "proto3";
+message IntroMessage {
+  int32 i = 1;
+  float f = 2;
+  string s = 3;
+  IntroMessage m = 4;
+  repeated int32 my_integers = 5;
+  repeated string my_strings = 6;
+  repeated IntroMessage my_messages = 7;
+}

@@ -2,11 +2,12 @@
 ; Instead of using arrays to express the repeated fields,
 ; this file uses the "repeated" style allowed by textproto.
 
+(budget 30)
+
 (items
   (name "dip")
   (amount 1)
-  (expected_cost_total 6.50)
-  (budget 10)
+  (expect_cost 6.50)
   (favorites "hummus")
   (favorites"garlic"))
 
@@ -14,8 +15,7 @@
   (name "hot sauce")
   (amount 3)
   (variety true)
-  (expected_cost_each 6.50)
-  (budget 20)
+  (expect_unit_cost 6.50)
   (favorites "yuzu")
   (favorites "kiss")
   (favorites "fire")

@@ -1,0 +1,17 @@
+; An array of integers.
+(my_integers 1)
+(my_integers 2)
+(my_integers 3)
+
+; An array of strings.
+(my_strings "yo")
+(my_strings "howdy")
+(my_strings "sup")
+
+; An array of messages.
+(my_messages (i 5))
+(my_messages)
+(my_messages
+  (i 5)
+  (f 5.5)
+  (s "hello"))

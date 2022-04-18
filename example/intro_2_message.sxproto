@@ -1,0 +1,2 @@
+; A message holding the first 3 fields of the previous example.
+(m (i 5) (f 5.5) (s "hello"))

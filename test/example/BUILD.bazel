@@ -1,19 +1,35 @@
 load("@fildesh//:def.bzl", "fildesh_test")
+load("//sxproto:defs.bzl", "sxproto_data")
 
 fildesh_test(
-    name = "nonempty_test",
+    name = "popcorn_nonempty_test",
     srcs = ["nonempty_test.fildesh"],
     named_inputs = {
-        "result_filename": "//example:party_sauces",
+        "result_filename": "//example:popcorn",
     },
+)
+
+fildesh_test(
+    name = "sauces_nonempty_test",
+    srcs = ["nonempty_test.fildesh"],
+    named_inputs = {
+        "result_filename": "//example:sauces",
+    },
+)
+
+sxproto_data(
+    name = "sauces_repeated",
+    src = "sauces_repeated.sxproto",
+    proto_deps = ["//example:grocery_proto"],
+    proto_message = "GroceryList",
 )
 
 fildesh_test(
     name = "compare_repeated_test",
     srcs = ["compare_repeated_test.fildesh"],
     named_inputs = {
-        "expect_filename": "//example:party_sauces",
-        "result_filename": "//example:party_sauces_repeated",
+        "expect_filename": "//example:sauces",
+        "result_filename": "sauces_repeated",
     },
 )
 
@@ -24,8 +40,8 @@ fildesh_test(
         "protoc": "@protobuf//:protoc",
     },
     named_inputs = {
-        "binaryproto_filename": "//example:party_sauces",
-        "textproto_filename": "party_sauces.textproto",
+        "binaryproto_filename": "//example:sauces",
+        "textproto_filename": "sauces.textproto",
         "descriptor_set_filename": "//example:grocery_proto",
     },
 )
@@ -37,8 +53,8 @@ fildesh_test(
         "protoc": "@protobuf//:protoc",
     },
     named_inputs = {
-        "binaryproto_filename": "//example:party_sauces",
-        "textproto_filename": "party_sauces_repeated.textproto",
+        "binaryproto_filename": "//example:sauces",
+        "textproto_filename": "sauces_repeated.textproto",
         "descriptor_set_filename": "//example:grocery_proto",
     },
 )
@@ -54,9 +70,10 @@ cc_test(
         "@fildesh//:fildesh_lib",
     ],
     data = [
-        "//example:party_sauces.sxproto",
+        "//example:sauces.sxproto",
     ],
     args = [
-        "$(location //example:party_sauces.sxproto)",
+        "$(location //example:sauces.sxproto)",
     ],
+    size = "small",
 )

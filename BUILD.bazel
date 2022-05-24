@@ -5,3 +5,9 @@ alias(
     visibility = ["//visibility:public"],
 )
 
+alias(
+    name = "binaryproto2json",
+    actual = "//src:binaryproto2json",
+    visibility = ["//visibility:public"],
+)
+

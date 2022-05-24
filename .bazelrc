@@ -15,3 +15,7 @@ build:valgrind --run_under='valgrind --trace-children=yes --track-fds=yes --leak
 build:valgrind --nocache_test_results
 build:valgrind --test_output=all
 build:valgrind -c dbg
+
+# Valgrind but dies on any error.
+build:valgrindie --run_under='valgrind --trace-children=yes --exit-on-first-error=yes --error-exitcode=23'
+build:valgrindie -c dbg

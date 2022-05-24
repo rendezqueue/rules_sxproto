@@ -14,3 +14,44 @@ cc_binary(
     visibility = ["//:__pkg__"],
 )
 
+cc_binary(
+    name = "binaryproto2json",
+    srcs = [
+        "binaryproto2json.cc",
+        "protobuf_schemae.cc",
+        "protobuf_schemae.hh",
+    ],
+    deps = [
+        "@fildesh//:fildesh_lib",
+        "@protobuf//:protobuf",
+    ],
+    visibility = ["//:__pkg__"],
+)
+
+cc_binary(
+    name = "json2binaryproto",
+    srcs = [
+        "json2binaryproto.cc",
+        "protobuf_schemae.cc",
+        "protobuf_schemae.hh",
+    ],
+    deps = [
+        "@fildesh//:fildesh_lib",
+        "@protobuf//:protobuf",
+    ],
+    visibility = ["//test:__subpackages__"],
+)
+
+cc_binary(
+    name = "diffprotobuf",
+    srcs = [
+        "diffprotobuf.cc",
+        "protobuf_schemae.cc",
+        "protobuf_schemae.hh",
+    ],
+    deps = [
+        "@fildesh//:fildesh_lib",
+        "@protobuf//:protobuf",
+    ],
+    visibility = ["//test:__subpackages__"],
+)

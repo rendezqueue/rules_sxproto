@@ -55,6 +55,8 @@ sxproto_data(
 sxproto_data(
     name = "sauces",
     src = "sauces.sxproto",
+    out_textproto = "sauces.textproto",
+    out_json = "sauces.json",
     proto_deps = ["grocery_proto"],
     proto_message = "GroceryList",
     visibility = ["//visibility:public"],

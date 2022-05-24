@@ -1,6 +1,22 @@
 def _sxproto_data_impl(ctx):
   sxproto_file = ctx.file.src
-  textproto_file = ctx.actions.declare_file(ctx.label.name + ".textproto")
+
+  binaryproto_file = None
+  if ctx.outputs.out_binaryproto:
+    binaryproto_file = ctx.outputs.out_binaryproto
+  else:
+    binaryproto_file = ctx.actions.declare_file(ctx.label.name + ".binaryproto")
+
+  outfiles = [binaryproto_file]
+
+  textproto_file = None
+  if ctx.outputs.out_textproto:
+    textproto_file = ctx.outputs.out_textproto
+    outfiles.append(textproto_file)
+  else:
+    textproto_file = ctx.actions.declare_file(ctx.label.name + ".textproto")
+
+  # Translate to textproto.
   args = ctx.actions.args()
   args.add_joined(["stdin=open_readonly", sxproto_file], join_with = ":")
   args.add_joined(["stdout=open_writeonly", textproto_file], join_with = ":")
@@ -14,7 +30,7 @@ def _sxproto_data_impl(ctx):
       tools = [ctx.executable._sxproto2textproto],
    )
 
-  binaryproto_file = ctx.actions.declare_file(ctx.label.name + ".binaryproto")
+  # Compile to binaryproto.
   args = ctx.actions.args()
   args.add_joined(["stdin=open_readonly", textproto_file], join_with = ":")
   args.add_joined(["stdout=open_writeonly", binaryproto_file], join_with = ":")
@@ -31,9 +47,24 @@ def _sxproto_data_impl(ctx):
       tools = [ctx.executable._protoc],
    )
 
+  if ctx.outputs.out_json:
+    json_file = ctx.outputs.out_json
+    outfiles.append(json_file)
+    args = ctx.actions.args()
+    args.add(binaryproto_file)
+    args.add(json_file)
+    args.add(ctx.attr.proto_message)
+    args.add_all(ctx.files.proto_deps)
+    ctx.actions.run(
+        executable = ctx.executable._binaryproto2json,
+        arguments = [args],
+        inputs = [binaryproto_file] + ctx.files.proto_deps,
+        outputs = [json_file],
+     )
+
   return DefaultInfo(
       files = depset([binaryproto_file]),
-      runfiles = ctx.runfiles(files = [binaryproto_file]),
+      runfiles = ctx.runfiles(files = outfiles),
   )
 
 
@@ -44,6 +75,18 @@ sxproto_data = rule(
             mandatory = True,
             allow_single_file = True,
             doc = "The .sxproto file to compile.",
+        ),
+        "out_binaryproto": attr.output(
+            mandatory = False,
+            doc = "The .binaryproto file to write.",
+        ),
+        "out_textproto": attr.output(
+            mandatory = False,
+            doc = "The .textproto file to write.",
+        ),
+        "out_json": attr.output(
+            mandatory = False,
+            doc = "The .json file to write.",
         ),
         "proto_deps": attr.label_list(
             mandatory = True,
@@ -67,6 +110,12 @@ sxproto_data = rule(
         ),
         "_sxproto2textproto": attr.label(
             default = Label("//:sxproto2textproto"),
+            allow_single_file = True,
+            executable = True,
+            cfg = "exec",
+        ),
+        "_binaryproto2json": attr.label(
+            default = Label("//:binaryproto2json"),
             allow_single_file = True,
             executable = True,
             cfg = "exec",

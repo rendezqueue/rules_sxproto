@@ -38,6 +38,7 @@ fildesh_test(
     srcs = ["compile_textproto_test.fildesh"],
     aliases = {
         "protoc": "@protobuf//:protoc",
+        "diffprotobuf": "//src:diffprotobuf",
     },
     named_inputs = {
         "binaryproto_filename": "//example:sauces",
@@ -47,10 +48,25 @@ fildesh_test(
 )
 
 fildesh_test(
+    name = "compile_json_test",
+    srcs = ["compile_json_test.fildesh"],
+    aliases = {
+        "json2binaryproto": "//src:json2binaryproto",
+        "diffprotobuf": "//src:diffprotobuf",
+    },
+    named_inputs = {
+        "binaryproto_filename": "//example:sauces",
+        "json_filename": "//example:sauces.json",
+        "descriptor_set_filename": "//example:grocery_proto",
+    },
+)
+
+fildesh_test(
     name = "compile_repeated_textproto_test",
     srcs = ["compile_textproto_test.fildesh"],
     aliases = {
         "protoc": "@protobuf//:protoc",
+        "diffprotobuf": "//src:diffprotobuf",
     },
     named_inputs = {
         "binaryproto_filename": "//example:sauces",

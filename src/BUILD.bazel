@@ -15,6 +15,20 @@ cc_binary(
 )
 
 cc_binary(
+    name = "textproto2binaryproto",
+    srcs = [
+        "textproto2binaryproto.cc",
+        "protobuf_schemae.cc",
+        "protobuf_schemae.hh",
+    ],
+    deps = [
+        "@fildesh//:fildesh_lib",
+        "@protobuf//:protobuf",
+    ],
+    visibility = ["//:__pkg__"],
+)
+
+cc_binary(
     name = "binaryproto2json",
     srcs = [
         "binaryproto2json.cc",

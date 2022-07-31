@@ -1,0 +1,12 @@
+(grocery_list
+  (budget 10)
+  ((items)
+   (()
+    (name "jar of olives")
+    (amount 1)))
+  ((items)
+   (()
+    (name "tortilla")
+    (amount 20))
+  )
+)

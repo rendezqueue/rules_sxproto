@@ -1,0 +1,9 @@
+(shopping_list
+  (grocery_list
+    ((items)
+     (()
+      (name "beer")
+      (amount 99))
+    )
+  )
+)

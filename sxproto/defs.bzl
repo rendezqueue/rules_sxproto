@@ -1,6 +1,13 @@
 def _sxproto_data_impl(ctx):
   sxproto_file = ctx.file.src
 
+  transitive_descriptor_sets = [
+      dep[ProtoInfo].transitive_descriptor_sets
+      for dep in ctx.attr.proto_deps
+  ]
+  descriptor_set_depset = depset(ctx.files.proto_deps,
+                                 transitive=transitive_descriptor_sets)
+
   binaryproto_file = None
   if ctx.outputs.out_binaryproto:
     binaryproto_file = ctx.outputs.out_binaryproto
@@ -32,33 +39,30 @@ def _sxproto_data_impl(ctx):
 
   # Compile to binaryproto.
   args = ctx.actions.args()
-  args.add_joined(["stdin=open_readonly", textproto_file], join_with = ":")
-  args.add_joined(["stdout=open_writeonly", binaryproto_file], join_with = ":")
-  args.add("--")
-  args.add(ctx.executable._protoc)
-  args.add_joined("--descriptor_set_in", ctx.files.proto_deps, join_with = ":")
-  args.add("--encode")
+  args.add(textproto_file)
+  args.add(binaryproto_file)
   args.add(ctx.attr.proto_message)
+  args.add_all(descriptor_set_depset)
   ctx.actions.run(
-      executable = ctx.executable._fildespawn,
+      executable = ctx.executable._textproto2binaryproto,
       arguments = [args],
-      inputs = [textproto_file] + ctx.files.proto_deps,
+      inputs = depset([textproto_file], transitive=[descriptor_set_depset]),
       outputs = [binaryproto_file],
-      tools = [ctx.executable._protoc],
    )
 
   if ctx.outputs.out_json:
+    # Translate to JSON after the fact.
     json_file = ctx.outputs.out_json
     outfiles.append(json_file)
     args = ctx.actions.args()
     args.add(binaryproto_file)
     args.add(json_file)
     args.add(ctx.attr.proto_message)
-    args.add_all(ctx.files.proto_deps)
+    args.add_all(descriptor_set_depset)
     ctx.actions.run(
         executable = ctx.executable._binaryproto2json,
         arguments = [args],
-        inputs = [binaryproto_file] + ctx.files.proto_deps,
+        inputs = depset([binaryproto_file], transitive=[descriptor_set_depset]),
         outputs = [json_file],
      )
 
@@ -102,8 +106,8 @@ sxproto_data = rule(
             executable = True,
             cfg = "exec",
         ),
-        "_protoc": attr.label(
-            default = Label("@protobuf//:protoc"),
+        "_textproto2binaryproto": attr.label(
+            default = Label("//:textproto2binaryproto"),
             allow_single_file = True,
             executable = True,
             cfg = "exec",

@@ -6,6 +6,12 @@ alias(
 )
 
 alias(
+    name = "textproto2binaryproto",
+    actual = "//src:textproto2binaryproto",
+    visibility = ["//visibility:public"],
+)
+
+alias(
     name = "binaryproto2json",
     actual = "//src:binaryproto2json",
     visibility = ["//visibility:public"],

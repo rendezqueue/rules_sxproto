@@ -1,0 +1,66 @@
+load("@fildesh//:def.bzl", "fildesh_test")
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("//sxproto:defs.bzl", "sxproto_data")
+
+proto_library(
+    name = "shopping_proto",
+    srcs = ["shopping.proto"],
+    deps = ["//example:grocery_proto"],
+    testonly = 1,
+)
+
+cc_proto_library(
+    name = "shopping_cc_proto",
+    deps = [":shopping_proto"],
+    testonly = 1,
+)
+
+sxproto_data(
+    name = "shopping_sxproto_data",
+    out_json = "shopping_sxproto_data.json",
+    src = "shopping.sxproto",
+    proto_deps = [":shopping_proto"],
+    proto_message = "sxproto.test.depend.ShoppingList",
+    testonly = 1,
+)
+
+cc_test(
+    name = "shopping_expect_test",
+    srcs = ["shopping_expect_test.cc"],
+    deps = [":shopping_cc_proto"],
+    data = [":shopping_sxproto_data"],
+    args = ["$(location :shopping_sxproto_data)"],
+    size = "small",
+)
+
+
+proto_library(
+    name = "task_proto",
+    srcs = ["task.proto"],
+    deps = [":shopping_proto"],
+    testonly = 1,
+)
+
+sxproto_data(
+    name = "task_sxproto_data",
+    src = "task.sxproto",
+    proto_deps = [":task_proto"],
+    proto_message = "sxproto.test.depend.TaskList",
+    testonly = 1,
+)
+
+cc_proto_library(
+    name = "task_cc_proto",
+    deps = [":task_proto"],
+    testonly = 1,
+)
+
+cc_test(
+    name = "task_expect_test",
+    srcs = ["task_expect_test.cc"],
+    deps = [":task_cc_proto"],
+    data = [":task_sxproto_data"],
+    args = ["$(location :task_sxproto_data)"],
+    size = "small",
+)
+

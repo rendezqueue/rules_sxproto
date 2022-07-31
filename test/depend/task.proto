@@ -1,0 +1,8 @@
+syntax = "proto3";
+package sxproto.test.depend;
+import "test/depend/shopping.proto";
+
+message TaskList {
+  ShoppingList shopping_list = 1;
+  // Idea being that we could have other kinds of lists of tasks.
+}

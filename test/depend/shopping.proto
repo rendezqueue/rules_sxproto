@@ -1,0 +1,7 @@
+syntax = "proto3";
+package sxproto.test.depend;
+import "example/grocery.proto";
+
+message ShoppingList {
+  GroceryList grocery_list = 1;
+}

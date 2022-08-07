@@ -43,6 +43,20 @@ cc_binary(
 )
 
 cc_binary(
+    name = "binaryproto2json_camelcase",
+    srcs = [
+        "binaryproto2json_camelcase.cc",
+        "protobuf_schemae.cc",
+        "protobuf_schemae.hh",
+    ],
+    deps = [
+        "@fildesh//:fildesh_lib",
+        "@protobuf//:protobuf",
+    ],
+    visibility = ["//:__pkg__"],
+)
+
+cc_binary(
     name = "json2binaryproto",
     srcs = [
         "json2binaryproto.cc",
@@ -53,6 +67,7 @@ cc_binary(
         "@fildesh//:fildesh_lib",
         "@protobuf//:protobuf",
     ],
+    testonly = 1,
     visibility = ["//test:__subpackages__"],
 )
 
@@ -67,5 +82,6 @@ cc_binary(
         "@fildesh//:fildesh_lib",
         "@protobuf//:protobuf",
     ],
+    testonly = 1,
     visibility = ["//test:__subpackages__"],
 )

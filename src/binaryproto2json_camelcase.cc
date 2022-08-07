@@ -8,7 +8,6 @@
 #include "protobuf_schemae.hh"
 
 using google::protobuf::Message;
-using google::protobuf::util::JsonPrintOptions;
 using google::protobuf::util::MessageToJsonString;
 
 
@@ -32,13 +31,14 @@ int main(int argc, char** argv) {
   // Read & Parse.
   std::unique_ptr<Message> message =
     schemae->new_message_from_binary_file(argv[1], message_name);
+  if (!message) {
+    return 65;
+  }
 
   // Encode.
   std::string out_content;
-  JsonPrintOptions json_options;
-  json_options.preserve_proto_field_names = true;
   google::protobuf::util::Status status = MessageToJsonString(
-      *message, &out_content, json_options);
+      *message, &out_content);
   if (!status.ok()) {
     std::cerr << "Error encoding json." << std::endl;
     return 74;

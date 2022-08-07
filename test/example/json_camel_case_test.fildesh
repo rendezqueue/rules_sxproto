@@ -1,0 +1,5 @@
+|< zec -x $(XA json_filename)
+|- replace_string expectUnitCost FOUND_CAMEL_CASE
+|> cmp - $(XA json_filename) $(O? status)
+
+expect_failure -x? $(XF status)

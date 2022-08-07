@@ -62,6 +62,20 @@ fildesh_test(
 )
 
 fildesh_test(
+    name = "compile_json_camelcase_test",
+    srcs = ["compile_json_test.fildesh"],
+    aliases = {
+        "json2binaryproto": "//src:json2binaryproto",
+        "diffprotobuf": "//src:diffprotobuf",
+    },
+    named_inputs = {
+        "binaryproto_filename": "//example:sauces",
+        "json_filename": "//example:sauces_camelcase.json",
+        "descriptor_set_filename": "//example:grocery_proto",
+    },
+)
+
+fildesh_test(
     name = "compile_repeated_textproto_test",
     srcs = ["compile_textproto_test.fildesh"],
     aliases = {
@@ -92,4 +106,19 @@ cc_test(
         "$(location //example:sauces.sxproto)",
     ],
     size = "small",
+)
+
+fildesh_test(
+    name = "json_snake_case_test",
+    srcs = ["json_snake_case_test.fildesh"],
+    named_inputs = {
+        "json_filename": "//example:sauces.json",
+    },
+)
+fildesh_test(
+    name = "json_camel_case_test",
+    srcs = ["json_camel_case_test.fildesh"],
+    named_inputs = {
+        "json_filename": "//example:sauces_camelcase.json",
+    },
 )

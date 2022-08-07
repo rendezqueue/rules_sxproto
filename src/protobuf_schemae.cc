@@ -6,6 +6,8 @@
 #include <google/protobuf/descriptor.pb.h>
 #include <google/protobuf/message_lite.h>
 
+#include "fildesh.h"
+
 using google::protobuf::Descriptor;
 using google::protobuf::DescriptorDatabase;
 using google::protobuf::DescriptorPool;
@@ -84,3 +86,59 @@ ProtobufSchemae::new_message(const std::string& message_name)
       this->message_factory_->GetPrototype(message_type)->New());
   return result;
 }
+
+  std::unique_ptr<google::protobuf::Message>
+ProtobufSchemae::new_message_from_binary_file(
+    const std::string& filename,
+    const std::string& message_name)
+{
+  std::unique_ptr<Message> message = this->new_message(message_name);
+  if (!message) {
+    std::cerr << "Cannot find message type: " << message_name << std::endl;
+    return nullptr;
+  }
+
+  // Read.
+  FildeshX* in = open_FildeshXF(filename.c_str());
+  if (!in) {
+    std::cerr << "Cannot open input file: " << filename << std::endl;
+    return nullptr;
+  }
+  slurp_FildeshX(in);
+  const std::string in_content(in->at, in->size);
+  close_FildeshX(in);
+
+  // Parse.
+  if (!message->ParseFromString(in_content)) {
+    std::cerr << message->DebugString() << std::endl;
+    return nullptr;
+  }
+  return message;
+}
+
+  size_t
+ProtobufSchemae::write_message_to_binary_file(
+    const std::string& filename,
+    const google::protobuf::Message& message)
+{
+  // Encode.
+  std::string out_content;
+  if (!message.SerializeToString(&out_content)) {
+    std::cerr << "Error encoding binaryproto." << std::endl;
+    return 0;
+  }
+
+  // Write.
+  FildeshO* out = open_FildeshOF(filename.c_str());
+  if (!out) {
+    std::cerr << "Error opening output file: " << filename << std::endl;
+    return 0;
+  }
+  put_bytestring_FildeshO(
+      out,
+      (const unsigned char*)out_content.data(),
+      out_content.size());
+  close_FildeshO(out);
+  return out_content.size();
+}
+

@@ -17,3 +17,9 @@ alias(
     visibility = ["//visibility:public"],
 )
 
+alias(
+    name = "binaryproto2json_camelcase",
+    actual = "//src:binaryproto2json_camelcase",
+    visibility = ["//visibility:public"],
+)
+

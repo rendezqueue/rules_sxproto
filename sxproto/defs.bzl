@@ -66,6 +66,22 @@ def _sxproto_data_impl(ctx):
         outputs = [json_file],
      )
 
+  if ctx.outputs.out_json_camelcase:
+    # Translate to JSON after the fact.
+    json_file = ctx.outputs.out_json_camelcase
+    outfiles.append(json_file)
+    args = ctx.actions.args()
+    args.add(binaryproto_file)
+    args.add(json_file)
+    args.add(ctx.attr.proto_message)
+    args.add_all(descriptor_set_depset)
+    ctx.actions.run(
+        executable = ctx.executable._binaryproto2json_camelcase,
+        arguments = [args],
+        inputs = depset([binaryproto_file], transitive=[descriptor_set_depset]),
+        outputs = [json_file],
+     )
+
   return DefaultInfo(
       files = depset([binaryproto_file]),
       runfiles = ctx.runfiles(files = outfiles),
@@ -91,6 +107,10 @@ sxproto_data = rule(
         "out_json": attr.output(
             mandatory = False,
             doc = "The .json file to write.",
+        ),
+        "out_json_camelcase": attr.output(
+            mandatory = False,
+            doc = "The .json file to write with camelCase fields.",
         ),
         "proto_deps": attr.label_list(
             mandatory = True,
@@ -120,6 +140,12 @@ sxproto_data = rule(
         ),
         "_binaryproto2json": attr.label(
             default = Label("//:binaryproto2json"),
+            allow_single_file = True,
+            executable = True,
+            cfg = "exec",
+        ),
+        "_binaryproto2json_camelcase": attr.label(
+            default = Label("//:binaryproto2json_camelcase"),
             allow_single_file = True,
             executable = True,
             cfg = "exec",

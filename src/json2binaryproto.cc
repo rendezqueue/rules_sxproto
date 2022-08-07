@@ -53,24 +53,10 @@ int main(int argc, char** argv) {
     return 65;
   }
 
-  // Encode.
-  std::string out_content;
-  if (!message->SerializeToString(&out_content)) {
-    std::cerr << "Error encoding binaryproto." << std::endl;
+  // Encode & Write.
+  if (0 == schemae->write_message_to_binary_file(argv[2], *message)) {
     return 74;
   }
-
-  // Write.
-  FildeshO* out = open_FildeshOF(argv[2]);
-  if (!out) {
-    std::cerr << "Error opening output file: " << argv[2] << std::endl;
-    return 73;
-  }
-  put_bytestring_FildeshO(
-      out,
-      (const unsigned char*)out_content.data(),
-      out_content.size());
-  close_FildeshO(out);
 
   google::protobuf::ShutdownProtobufLibrary();
   return 0;

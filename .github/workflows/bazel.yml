@@ -20,7 +20,7 @@ jobs:
       run: bazel --version
 
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Build
       run: bazel build //...
@@ -56,7 +56,7 @@ jobs:
         bazel-version: '5'
 
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Coverage
       run: >

@@ -1,5 +1,5 @@
 
-#include "fildesh.h"
+#include <fildesh/fildesh.h>
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
@@ -27,6 +27,7 @@ enum SxprotoAstType {
   SXPROTO_AST_MESSAGE,
   SXPROTO_AST_SCALAR,
   SXPROTO_AST_REPEATED,
+  SXPROTO_AST_MANYOF,
   SXPROTO_AST_END,  /* May appear at end of list.*/
 };
 
@@ -68,7 +69,7 @@ update_SxprotoPosition(SxprotoPosition* pos, const FildeshX* slice)
     size_t n = &slice->at[slice->size] - s;
     pos->line_count += 1;
     pos->column_count = n;
-    s = (char*)memchr(&s[1], '\n', n);
+    s = (char*)memchr(&s[1], '\n', n-1);
   }
 }
 
@@ -206,15 +207,35 @@ parse_after_open_paren(
     parse_separation(in, result, pos, alloc);
 
     slice = until_chars_FildeshX(in, sxproto_delim_bytes);
-    if (slice.size == 0) {
-      result->ast_type = SXPROTO_AST_MESSAGE;
-      consistent_ast_type  = SXPROTO_AST_MESSAGE;
-    }
-    else {
-      result->ast_type = SXPROTO_AST_REPEATED;
+    if (slice.size == 0 && skipstr_FildeshX(in, "(")) {
+      pos->column_count += 1;
+      parse_separation(in, result, pos, alloc);
+
+      slice = until_chars_FildeshX(in, sxproto_delim_bytes);
+      if (slice.size == 0) {
+        syntax_error(pos, "Expected manyof name.");
+        return false;
+      }
       update_SxprotoPosition(pos, &slice);
+      result->ast_type = SXPROTO_AST_MANYOF;
+      consistent_ast_type  = SXPROTO_AST_MANYOF;
       result->text = strdup_FildeshX(&slice, alloc);
       parse_separation(in, result, pos, alloc);
+      if (!skipstr_FildeshX(in, ")")) {
+        syntax_error(pos, "Expected closing paren.");
+        return false;
+      }
+      pos->column_count += 1;
+    }
+    else if (slice.size > 0) {
+      update_SxprotoPosition(pos, &slice);
+      result->ast_type = SXPROTO_AST_REPEATED;
+      result->text = strdup_FildeshX(&slice, alloc);
+      parse_separation(in, result, pos, alloc);
+    }
+    else {
+      result->ast_type = SXPROTO_AST_MESSAGE;
+      consistent_ast_type  = SXPROTO_AST_MESSAGE;
     }
 
     if (!skipstr_FildeshX(in, ")")) {
@@ -322,7 +343,10 @@ parse_sxproto(FildeshX* in, FildeshAlloc* alloc)
 }
 
   static void
-translate_SxprotoSeparation(const SxprotoSeparation* g, FildeshO* out)
+translate_SxprotoSeparation(
+    const SxprotoSeparation* g,
+    const char* postpreseparation,
+    FildeshO* out)
 {
   while (g) {
     if (g->is_line_comment) {
@@ -336,12 +360,18 @@ translate_SxprotoSeparation(const SxprotoSeparation* g, FildeshO* out)
     }
     g = g->next;
   }
+  if (postpreseparation) {
+    puts_FildeshO(out, postpreseparation);
+  }
 }
 
   static void
-translate_SxprotoAST(const SxprotoAST* a, FildeshO* out)
+translate_SxprotoAST(
+    const SxprotoAST* a,
+    const char* postpreseparation,
+    FildeshO* out)
 {
-  translate_SxprotoSeparation(a->preseparation, out);
+  translate_SxprotoSeparation(a->preseparation, postpreseparation, out);
   if (a->ast_type == SXPROTO_AST_REPEATED) {
     assert(a->text);
     puts_FildeshO(out, a->text);
@@ -356,13 +386,44 @@ translate_SxprotoAST(const SxprotoAST* a, FildeshO* out)
         assert(a->ast_type != SXPROTO_AST_REPEATED);
         assert(!a->elem);
       }
-      translate_SxprotoAST(a, out);
+      translate_SxprotoAST(a, NULL, out);
       if (a->next && a->next->ast_type != SXPROTO_AST_END) {
         putc_FildeshO(out, ',');
       }
       a = a->next;
     }
     puts_FildeshO(out, "]");
+  }
+  else if (a->ast_type == SXPROTO_AST_MANYOF) {
+    assert(a->text);
+    puts_FildeshO(out, a->text);
+    puts_FildeshO(out, " {values: [");
+    a = a->elem;
+    while (a) {
+      if (a->ast_type == SXPROTO_AST_MESSAGE ||
+          a->ast_type == SXPROTO_AST_SCALAR ||
+          a->ast_type == SXPROTO_AST_MANYOF)
+      {
+        if (!a->text || (a->ast_type == SXPROTO_AST_SCALAR && !a->elem)) {
+          translate_SxprotoAST(a, "{value: ", out);
+        }
+        else {
+          translate_SxprotoAST(a, "{", out);
+        }
+        putc_FildeshO(out, '}');
+      }
+      else {
+        assert(a->ast_type == SXPROTO_AST_END);
+        assert(!a->elem);
+        assert(!a->next);
+        translate_SxprotoAST(a, NULL, out);
+      }
+      if (a->next && a->next->ast_type != SXPROTO_AST_END) {
+        putc_FildeshO(out, ',');
+      }
+      a = a->next;
+    }
+    puts_FildeshO(out, "]}");
   }
   else if (a->ast_type == SXPROTO_AST_MESSAGE) {
     if (a->text) {
@@ -372,7 +433,7 @@ translate_SxprotoAST(const SxprotoAST* a, FildeshO* out)
     putc_FildeshO(out, '{');
     a = a->elem;
     while (a) {
-      translate_SxprotoAST(a, out);
+      translate_SxprotoAST(a, NULL, out);
       a = a->next;
     }
     putc_FildeshO(out, '}');
@@ -386,7 +447,7 @@ translate_SxprotoAST(const SxprotoAST* a, FildeshO* out)
     while (a) {
       assert(a->ast_type == SXPROTO_AST_SCALAR || a->ast_type == SXPROTO_AST_END);
       assert(!a->elem);
-      translate_SxprotoAST(a, out);
+      translate_SxprotoAST(a, NULL, out);
       a = a->next;
     }
   }
@@ -406,7 +467,7 @@ bool sxproto2textproto(FildeshX* in, FildeshO* out)
   result = parse_sxproto(in, alloc);
   close_FildeshX(in);
   for (a = result; a; a = a->next) {
-    translate_SxprotoAST(a, out);
+    translate_SxprotoAST(a, NULL, out);
   }
   close_FildeshAlloc(alloc);
   return !!result;

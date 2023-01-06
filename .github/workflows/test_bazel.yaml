@@ -1,3 +1,4 @@
+---
 name: Bazel
 on: [push, pull_request]
 
@@ -11,10 +12,17 @@ jobs:
     runs-on: ${{ matrix.platform }}
 
     steps:
+    - name: Cache Setup
+      uses: actions/cache@v3
+      id: cache-bazel
+      with:
+        path: ~/.cache/bazel
+        key: ${{ runner.os }}-bazel
+
     - name: Bazel Setup
       uses: jwlawson/actions-setup-bazel@v1
       with:
-        bazel-version: '5'
+        bazel-version: '6'
 
     - name: Bazel Version
       run: bazel --version
@@ -23,10 +31,10 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Build
-      run: bazel build //...
+      run: bazel build --disk_cache ~/.cache/bazel //...
 
     - name: Test
-      run: bazel test --test_timeout 10 //...
+      run: bazel test --disk_cache ~/.cache/bazel --test_timeout 10 //...
 
     - name: Upload Test Results
       uses: actions/upload-artifact@v3
@@ -50,17 +58,35 @@ jobs:
       fail-fast: false
 
     steps:
+    - name: Cache Setup
+      uses: actions/cache@v3
+      id: cache-bazel
+      with:
+        path: ~/.cache/bazel
+        key: ${{ runner.os }}-bazel
+
     - name: Bazel Setup
       uses: jwlawson/actions-setup-bazel@v1
       with:
-        bazel-version: '5'
+        bazel-version: '6'
 
     - name: Checkout
       uses: actions/checkout@v3
 
+    - name: Build
+      run: >
+        bazel build
+        --disk_cache ~/.cache/bazel
+        --collect_code_coverage
+        --instrument_test_targets
+        --instrumentation_filter="^//..."
+        --
+        //...
+
     - name: Coverage
       run: >
         bazel coverage
+        --disk_cache ~/.cache/bazel
         --instrument_test_targets
         --instrumentation_filter="^//..."
         --combined_report=lcov

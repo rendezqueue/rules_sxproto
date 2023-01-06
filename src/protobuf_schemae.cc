@@ -6,7 +6,7 @@
 #include <google/protobuf/descriptor.pb.h>
 #include <google/protobuf/message_lite.h>
 
-#include "fildesh.h"
+#include <fildesh/fildesh.h>
 
 using google::protobuf::Descriptor;
 using google::protobuf::DescriptorDatabase;

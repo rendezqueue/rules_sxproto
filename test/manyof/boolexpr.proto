@@ -1,0 +1,19 @@
+syntax = "proto3";
+package sxproto.test.manyof;
+
+message BooleanExpressionOneof {
+  oneof expression_union {
+    bool value = 1;
+    BooleanExpressionOneof not = 2;
+    BooleanExpressionManyof and = 3;
+    BooleanExpressionManyof or = 4;
+  };
+};
+
+message BooleanExpressionManyof {
+  repeated BooleanExpressionOneof values = 1;
+};
+
+message BooleanExpressionList {
+  BooleanExpressionManyof expressions = 1;
+};

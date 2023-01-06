@@ -1,5 +1,5 @@
 
-#include "fildesh.h"
+#include <fildesh/fildesh.h>
 #include <assert.h>
 
 bool sxproto2textproto(FildeshX* in, FildeshO* out);

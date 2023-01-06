@@ -4,7 +4,7 @@
 
 #include <google/protobuf/text_format.h>
 
-#include "fildesh.h"
+#include <fildesh/fildesh.h>
 #include "protobuf_schemae.hh"
 
 using google::protobuf::Message;
@@ -46,7 +46,9 @@ int main(int argc, char** argv) {
   close_FildeshX(in);
 
   // Parse.
-  if (!TextFormat::ParseFromString(in_content, message.get())) {
+  TextFormat::Parser textproto_parser;
+  textproto_parser.AllowFieldNumber(true);
+  if (!textproto_parser.ParseFromString(in_content, message.get())) {
     std::cerr << "Error parsing textproto." << std::endl;
     return 65;
   }

@@ -1,0 +1,24 @@
+load("@fildesh//:def.bzl", "fildesh_test")
+load("//sxproto:defs.bzl", "protobuf_equality_test")
+
+protobuf_equality_test(
+    name = "intro_1_2_inequality_test",
+    srcs = [
+        "//example:intro_1_scalar",
+        "//example:intro_2_message",
+    ],
+    proto_deps = ["//example:intro_proto"],
+    proto_message = "IntroMessage",
+    expect_failure = True,
+)
+
+protobuf_equality_test(
+    name = "intro_4_5_equality_test",
+    srcs = [
+        "//example:intro_4_repeated",
+        "//example:intro_5_array",
+    ],
+    proto_deps = ["//example:intro_proto"],
+    proto_message = "IntroMessage",
+)
+

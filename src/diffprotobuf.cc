@@ -1,14 +1,40 @@
-#include <string>
-#include <iostream>
-#include <vector>
 
-#include <google/protobuf/util/message_differencer.h>
+#include <iostream>
 
 #include <fildesh/fildesh.h>
+#include <google/protobuf/util/message_differencer.h>
+
 #include "protobuf_schemae.hh"
+#include "protobuf_transcode.hh"
 
 using google::protobuf::Message;
 
+
+static bool str_ends_with(const std::string& a, const std::string& sfx) {
+  if (sfx.size() > a.size()) {
+    return false;
+  }
+  return (0 == a.compare(a.size()-sfx.size(), sfx.size(), sfx));
+}
+
+static
+  std::unique_ptr<Message>
+new_message_from_file(
+    const std::string& in_filename,
+    const std::string& message_name,
+    ProtobufSchemae& schemae)
+{
+  if (str_ends_with(in_filename, ".sxproto")) {
+    return new_message_from_sxproto_file(in_filename, message_name, schemae);
+  }
+  if (str_ends_with(in_filename, ".textproto")) {
+    return new_message_from_textproto_file(in_filename, message_name, schemae);
+  }
+  if (str_ends_with(in_filename, ".json")) {
+    return new_message_from_json_file(in_filename, message_name, schemae);
+  }
+  return schemae.new_message_from_binary_file(in_filename, message_name);
+}
 
 int main(int argc, char** argv) {
   const unsigned descriptor_index_offset = 4;
@@ -27,42 +53,11 @@ int main(int argc, char** argv) {
     return 65;
   }
 
-  std::unique_ptr<Message> lhs_message = schemae->new_message(message_name);
-  std::unique_ptr<Message> rhs_message = schemae->new_message(message_name);
+  std::unique_ptr<Message> lhs_message = (
+      new_message_from_file(argv[1], message_name, *schemae));
+  std::unique_ptr<Message> rhs_message = (
+      new_message_from_file(argv[2], message_name, *schemae));
   if (!lhs_message || !rhs_message) {
-    std::cerr << "Cannot find message type: " << message_name << std::endl;
-    return 65;
-  }
-
-  // Read 1.
-  FildeshX* in = open_FildeshXF(argv[1]);
-  if (!in) {
-    std::cerr << "Cannot open input file: " << argv[1] << std::endl;
-    return 65;
-  }
-  slurp_FildeshX(in);
-  const std::string lhs_content(in->at, in->size);
-  close_FildeshX(in);
-
-  // Parse 1.
-  if (!lhs_message->ParseFromString(lhs_content)) {
-    std::cerr << lhs_message->DebugString() << std::endl;
-    return 65;
-  }
-
-  // Read 2.
-  in = open_FildeshXF(argv[2]);
-  if (!in) {
-    std::cerr << "Cannot open input file: " << argv[2] << std::endl;
-    return 65;
-  }
-  slurp_FildeshX(in);
-  const std::string rhs_content(in->at, in->size);
-  close_FildeshX(in);
-
-  // Parse 2.
-  if (!rhs_message->ParseFromString(rhs_content)) {
-    std::cerr << rhs_message->DebugString() << std::endl;
     return 65;
   }
 

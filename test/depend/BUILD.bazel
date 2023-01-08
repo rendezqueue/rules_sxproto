@@ -1,6 +1,5 @@
-load("@fildesh//:def.bzl", "fildesh_test")
 load("@rules_proto//proto:defs.bzl", "proto_library")
-load("//sxproto:defs.bzl", "sxproto_data")
+load("//sxproto:defs.bzl", "sxproto_data", "protobuf_equality_test")
 
 proto_library(
     name = "shopping_proto",
@@ -16,9 +15,9 @@ cc_proto_library(
 )
 
 sxproto_data(
-    name = "shopping_sxproto_data",
-    out_json = "shopping_sxproto_data.json",
+    name = "shopping_data",
     src = "shopping.sxproto",
+    out_textproto = "shopping_data.textproto",
     proto_deps = [":shopping_proto"],
     proto_message = "sxproto.test.depend.ShoppingList",
     testonly = 1,
@@ -28,11 +27,20 @@ cc_test(
     name = "shopping_expect_test",
     srcs = ["shopping_expect_test.cc"],
     deps = [":shopping_cc_proto"],
-    data = [":shopping_sxproto_data"],
-    args = ["$(location :shopping_sxproto_data)"],
+    data = [":shopping_data"],
+    args = ["$(location :shopping_data)"],
     size = "small",
 )
 
+protobuf_equality_test(
+    name = "shopping_textproto_equality_test",
+    srcs = [
+        "shopping_data.textproto",
+        "shopping_data",
+    ],
+    proto_deps = [":shopping_proto"],
+    proto_message = "sxproto.test.depend.ShoppingList",
+)
 
 proto_library(
     name = "task_proto",
@@ -42,8 +50,9 @@ proto_library(
 )
 
 sxproto_data(
-    name = "task_sxproto_data",
+    name = "task_data",
     src = "task.sxproto",
+    out_json = "task_data.json",
     proto_deps = [":task_proto"],
     proto_message = "sxproto.test.depend.TaskList",
     testonly = 1,
@@ -59,8 +68,17 @@ cc_test(
     name = "task_expect_test",
     srcs = ["task_expect_test.cc"],
     deps = [":task_cc_proto"],
-    data = [":task_sxproto_data"],
-    args = ["$(location :task_sxproto_data)"],
+    data = [":task_data"],
+    args = ["$(location :task_data)"],
     size = "small",
 )
 
+protobuf_equality_test(
+    name = "task_json_equality_test",
+    srcs = [
+        "task_data.json",
+        "task_data",
+    ],
+    proto_deps = [":task_proto"],
+    proto_message = "sxproto.test.depend.TaskList",
+)

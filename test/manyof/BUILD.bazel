@@ -1,6 +1,5 @@
-load("@fildesh//:def.bzl", "fildesh_test")
 load("@rules_proto//proto:defs.bzl", "proto_library")
-load("//sxproto:defs.bzl", "sxproto_data", "textproto_data")
+load("//sxproto:defs.bzl", "sxproto_data", "textproto_data", "protobuf_equality_test")
 
 proto_library(
     name = "boolexpr_proto",
@@ -24,31 +23,22 @@ textproto_data(
     testonly = 1,
 )
 
-fildesh_test(
-    name = "compile_sxproto_test",
-    srcs = ["compile_sxproto_test.fildesh"],
-    aliases = {
-        "diffprotobuf": "//src:diffprotobuf",
-        "sxproto2textproto": "//:sxproto2textproto",
-        "textproto2binaryproto": "//:textproto2binaryproto",
-    },
-    named_inputs = {
-        "sxproto_filename": "boolexpr.sxproto",
-        "descriptor_set_filename": ":boolexpr_proto",
-        "binaryproto_filename": ":boolexpr_textproto_data",
-    },
+protobuf_equality_test(
+    name = "boolexpr_sxproto_equality_test",
+    srcs = [
+        "boolexpr.sxproto",
+        ":boolexpr_textproto_data",
+    ],
+    proto_deps = [":boolexpr_proto"],
+    proto_message = "sxproto.test.manyof.BooleanExpressionList",
 )
 
-fildesh_test(
-    name = "compile_textproto_test",
-    srcs = ["compile_textproto_test.fildesh"],
-    aliases = {
-        "diffprotobuf": "//src:diffprotobuf",
-        "textproto2binaryproto": "//:textproto2binaryproto",
-    },
-    named_inputs = {
-        "textproto_filename": "boolexpr.textproto",
-        "descriptor_set_filename": ":boolexpr_proto",
-        "binaryproto_filename": ":boolexpr_sxproto_data",
-    },
+protobuf_equality_test(
+    name = "boolexpr_textproto_equality_test",
+    srcs = [
+        "boolexpr.textproto",
+        ":boolexpr_sxproto_data",
+    ],
+    proto_deps = [":boolexpr_proto"],
+    proto_message = "sxproto.test.manyof.BooleanExpressionList",
 )

@@ -1,11 +1,11 @@
 load("@fildesh//:def.bzl", "fildesh_test")
-load("//sxproto:defs.bzl", "sxproto_data")
+load("//sxproto:defs.bzl", "sxproto_data", "protobuf_equality_test")
 
 fildesh_test(
     name = "popcorn_nonempty_test",
     srcs = ["nonempty_test.fildesh"],
     named_inputs = {
-        "result_filename": "//example:popcorn",
+        "result_filename": "//example:popcorn_data",
     },
 )
 
@@ -13,112 +13,92 @@ fildesh_test(
     name = "sauces_nonempty_test",
     srcs = ["nonempty_test.fildesh"],
     named_inputs = {
-        "result_filename": "//example:sauces",
+        "result_filename": "//example:sauces_data",
     },
 )
 
 sxproto_data(
-    name = "sauces_repeated",
+    name = "sauces_repeated_data",
     src = "sauces_repeated.sxproto",
     proto_deps = ["//example:grocery_proto"],
     proto_message = "GroceryList",
 )
 
+# This is a binary comparison.
 fildesh_test(
     name = "compare_repeated_test",
     srcs = ["compare_repeated_test.fildesh"],
     named_inputs = {
-        "expect_filename": "//example:sauces",
-        "result_filename": "sauces_repeated",
+        "expect_filename": "//example:sauces_data",
+        "result_filename": "sauces_repeated_data",
     },
 )
 
 fildesh_test(
-    name = "compile_textproto_test",
-    srcs = ["compile_textproto_test.fildesh"],
+    name = "protoc_textproto_test",
+    srcs = ["protoc_textproto_test.fildesh"],
     aliases = {
         "protoc": "@protobuf//:protoc",
-        "diffprotobuf": "//src:diffprotobuf",
+        "diffprotobuf": "//tool:diffprotobuf",
     },
     named_inputs = {
-        "binaryproto_filename": "//example:sauces",
+        "binaryproto_filename": "//example:sauces_data",
         "textproto_filename": "sauces.textproto",
         "descriptor_set_filename": "//example:grocery_proto",
     },
 )
 
-fildesh_test(
-    name = "compile_json_test",
-    srcs = ["compile_json_test.fildesh"],
-    aliases = {
-        "json2binaryproto": "//src:json2binaryproto",
-        "diffprotobuf": "//src:diffprotobuf",
-    },
-    named_inputs = {
-        "binaryproto_filename": "//example:sauces",
-        "json_filename": "//example:sauces.json",
-        "descriptor_set_filename": "//example:grocery_proto",
-    },
-)
-
-fildesh_test(
-    name = "compile_json_camelcase_test",
-    srcs = ["compile_json_test.fildesh"],
-    aliases = {
-        "json2binaryproto": "//src:json2binaryproto",
-        "diffprotobuf": "//src:diffprotobuf",
-    },
-    named_inputs = {
-        "binaryproto_filename": "//example:sauces",
-        "json_filename": "//example:sauces_camelcase.json",
-        "descriptor_set_filename": "//example:grocery_proto",
-    },
-)
-
-fildesh_test(
-    name = "compile_repeated_textproto_test",
-    srcs = ["compile_textproto_test.fildesh"],
-    aliases = {
-        "protoc": "@protobuf//:protoc",
-        "diffprotobuf": "//src:diffprotobuf",
-    },
-    named_inputs = {
-        "binaryproto_filename": "//example:sauces",
-        "textproto_filename": "sauces_repeated.textproto",
-        "descriptor_set_filename": "//example:grocery_proto",
-    },
-)
-
-cc_test(
-    name = "parse_test",
+protobuf_equality_test(
+    name = "sauces_textproto_equality_test",
     srcs = [
-        "parse_test.c",
-        "//src:sxproto2textproto.c",
+        "//example:sauces_data.textproto",
+        "//example:sauces_data",
     ],
-    defines = ["UNIT_TESTING"],
-    deps = [
-        "@fildesh//:fildesh_lib",
-    ],
-    data = [
+    proto_deps = ["//example:grocery_proto"],
+    proto_message = "GroceryList",
+)
+
+protobuf_equality_test(
+    name = "sauces_json_equality_test",
+    srcs = [
+        "//example:sauces_data.json",
         "//example:sauces.sxproto",
     ],
-    args = [
-        "$(location //example:sauces.sxproto)",
+    proto_deps = ["//example:grocery_proto"],
+    proto_message = "GroceryList",
+)
+
+protobuf_equality_test(
+    name = "sauces_json_camelcase_equality_test",
+    srcs = [
+        "//example:sauces_data_camelcase.json",
+        "//example:sauces.sxproto",
     ],
-    size = "small",
+    proto_deps = ["//example:grocery_proto"],
+    proto_message = "GroceryList",
+)
+
+protobuf_equality_test(
+    name = "repeated_textproto_equality_test",
+    srcs = [
+        "sauces_repeated.textproto",
+        ":sauces_repeated_data",
+    ],
+    proto_deps = ["//example:grocery_proto"],
+    proto_message = "GroceryList",
 )
 
 fildesh_test(
     name = "json_snake_case_test",
     srcs = ["json_snake_case_test.fildesh"],
     named_inputs = {
-        "json_filename": "//example:sauces.json",
+        "json_filename": "//example:sauces_data.json",
     },
 )
 fildesh_test(
     name = "json_camel_case_test",
     srcs = ["json_camel_case_test.fildesh"],
     named_inputs = {
-        "json_filename": "//example:sauces_camelcase.json",
+        "json_filename": "//example:sauces_data_camelcase.json",
     },
 )

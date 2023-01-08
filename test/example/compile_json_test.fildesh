@@ -1,4 +1,0 @@
-
-|< zec -x $(XA json_filename)
-|- json2binaryproto - - GroceryList $(XA descriptor_set_filename)
-|> diffprotobuf $(XA binaryproto_filename) - GroceryList $(XA descriptor_set_filename)

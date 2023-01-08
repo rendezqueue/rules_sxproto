@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
   schemae = ProtobufSchemae::from_descriptor_files(
       std::vector<std::string>(&argv[descriptor_index_offset], &argv[argc]));
   if (schemae) {
-    message = new_message_from_json_file(argv[1], argv[3], *schemae);
+    message = new_message_from_textproto_file(argv[1], argv[3], *schemae);
   }
 
   int exstatus = 65;

@@ -1,4 +1,0 @@
-
-|< zec -x $(XA textproto_filename)
-|- textproto2binaryproto - - sxproto.test.manyof.BooleanExpressionList $(XA descriptor_set_filename)
-|> diffprotobuf $(XA binaryproto_filename) - sxproto.test.manyof.BooleanExpressionList $(XA descriptor_set_filename)

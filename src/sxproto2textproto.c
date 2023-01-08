@@ -1,5 +1,6 @@
 
-#include <fildesh/fildesh.h>
+#include "sxproto2textproto.h"
+
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
@@ -472,20 +473,3 @@ bool sxproto2textproto(FildeshX* in, FildeshO* out)
   close_FildeshAlloc(alloc);
   return !!result;
 }
-
-
-#ifndef UNIT_TESTING
-int main()
-{
-  FildeshX* in = open_fd_FildeshX(0);
-  FildeshO* out = open_fd_FildeshO(1);
-  int exstatus = 0;
-
-  if (!sxproto2textproto(in, out)) {
-    exstatus = 1;
-  }
-  close_FildeshO(out);
-  return exstatus;
-}
-#endif
-

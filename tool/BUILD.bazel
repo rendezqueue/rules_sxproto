@@ -1,0 +1,41 @@
+
+# //sxproto:defs.bzl depends on these aliases,
+# which must also have public visibility.
+package(default_visibility = [
+    "//visibility:public",
+])
+
+alias(
+    name = "binaryproto2json",
+    actual = "//src:binaryproto2json",
+)
+
+alias(
+    name = "binaryproto2json_camelcase",
+    actual = "//src:binaryproto2json_camelcase",
+)
+
+alias(
+    name = "diffprotobuf",
+    actual = "//src:diffprotobuf",
+)
+
+alias(
+    name = "json2binaryproto",
+    actual = "//src:json2binaryproto",
+)
+
+alias(
+    name = "sxproto2binaryproto",
+    actual = "//src:sxproto2binaryproto",
+)
+
+alias(
+    name = "sxproto2textproto",
+    actual = "//src:sxproto2textproto",
+)
+
+alias(
+    name = "textproto2binaryproto",
+    actual = "//src:textproto2binaryproto",
+)

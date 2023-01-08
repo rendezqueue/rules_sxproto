@@ -1,87 +1,70 @@
 
-exports_files([
-    "sxproto2textproto.c",
-], visibility = [
-    "//test:__subpackages__",
+package(default_visibility = [
+    "//tool:__pkg__",
 ])
+
+cc_library(
+    name = "protobuf_transcode_lib",
+    srcs = [
+        "protobuf_schemae.cc",
+        "protobuf_schemae.hh",
+        "protobuf_transcode.cc",
+        "protobuf_transcode.hh",
+        "sxproto2textproto.c",
+        "sxproto2textproto.h",
+    ],
+    deps = [
+        "@fildesh//:fildesh_cc_lib",
+        "@protobuf//:protobuf",
+  ],
+)
+
+cc_binary(
+    name = "sxproto2binaryproto",
+    srcs = ["sxproto2binaryproto_main.cc"],
+    deps = [":protobuf_transcode_lib"],
+)
 
 cc_binary(
     name = "sxproto2textproto",
-    srcs = ["sxproto2textproto.c"],
+    srcs = [
+        "sxproto2textproto_main.c",
+        "sxproto2textproto.c",
+        "sxproto2textproto.h",
+    ],
     deps = [
         "@fildesh//:fildesh_lib",
     ],
-    visibility = ["//:__pkg__"],
 )
 
 cc_binary(
     name = "textproto2binaryproto",
-    srcs = [
-        "textproto2binaryproto.cc",
-        "protobuf_schemae.cc",
-        "protobuf_schemae.hh",
-    ],
-    deps = [
-        "@fildesh//:fildesh_lib",
-        "@protobuf//:protobuf",
-    ],
-    visibility = ["//:__pkg__"],
+    srcs = ["textproto2binaryproto_main.cc"],
+    deps = [":protobuf_transcode_lib"],
 )
 
 cc_binary(
     name = "binaryproto2json",
-    srcs = [
-        "binaryproto2json.cc",
-        "protobuf_schemae.cc",
-        "protobuf_schemae.hh",
-    ],
-    deps = [
-        "@fildesh//:fildesh_lib",
-        "@protobuf//:protobuf",
-    ],
-    visibility = ["//:__pkg__"],
+    srcs = ["binaryproto2json.cc"],
+    deps = [":protobuf_transcode_lib"],
 )
 
 cc_binary(
     name = "binaryproto2json_camelcase",
-    srcs = [
-        "binaryproto2json_camelcase.cc",
-        "protobuf_schemae.cc",
-        "protobuf_schemae.hh",
-    ],
-    deps = [
-        "@fildesh//:fildesh_lib",
-        "@protobuf//:protobuf",
-    ],
-    visibility = ["//:__pkg__"],
+    srcs = ["binaryproto2json_camelcase.cc"],
+    deps = [":protobuf_transcode_lib"],
 )
 
 cc_binary(
     name = "json2binaryproto",
-    srcs = [
-        "json2binaryproto.cc",
-        "protobuf_schemae.cc",
-        "protobuf_schemae.hh",
-    ],
-    deps = [
-        "@fildesh//:fildesh_lib",
-        "@protobuf//:protobuf",
-    ],
-    testonly = 1,
-    visibility = ["//test:__subpackages__"],
+    srcs = ["json2binaryproto.cc"],
+    deps = [":protobuf_transcode_lib"],
 )
 
 cc_binary(
     name = "diffprotobuf",
     srcs = [
         "diffprotobuf.cc",
-        "protobuf_schemae.cc",
-        "protobuf_schemae.hh",
     ],
-    deps = [
-        "@fildesh//:fildesh_lib",
-        "@protobuf//:protobuf",
-    ],
-    testonly = 1,
-    visibility = ["//test:__subpackages__"],
+    deps = [":protobuf_transcode_lib"],
 )

@@ -1,6 +1,10 @@
 load("//sxproto:defs.bzl", "sxproto_data")
 load("@rules_proto//proto:defs.bzl", "proto_library")
 
+package(default_visibility = [
+    "//test:__subpackages__",
+])
+
 proto_library(
     name = "intro_proto",
     srcs = ["intro.proto"],
@@ -41,31 +45,26 @@ sxproto_data(
 proto_library(
     name = "grocery_proto",
     srcs = ["grocery.proto"],
-    visibility = ["//visibility:public"],
 )
 
 sxproto_data(
-    name = "popcorn",
+    name = "popcorn_data",
     src = "popcorn.sxproto",
     proto_deps = ["grocery_proto"],
     proto_message = "GroceryListItem",
-    visibility = ["//visibility:public"],
 )
 
 sxproto_data(
-    name = "sauces",
+    name = "sauces_data",
     src = "sauces.sxproto",
-    out_textproto = "sauces.textproto",
-    out_json = "sauces.json",
-    out_json_camelcase = "sauces_camelcase.json",
+    out_textproto = "sauces_data.textproto",
+    out_json = "sauces_data.json",
+    out_json_camelcase = "sauces_data_camelcase.json",
     proto_deps = ["grocery_proto"],
     proto_message = "GroceryList",
-    visibility = ["//visibility:public"],
 )
 
 exports_files([
     "popcorn.sxproto",
     "sauces.sxproto",
-], visibility = [
-    "//test/example:__pkg__",
 ])

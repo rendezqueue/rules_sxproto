@@ -2,11 +2,12 @@
 
 #include <fstream>
 #include <iostream>
+
+#include <fildesh/fildesh.h>
+#include <fildesh/ifstream.hh>
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/descriptor.pb.h>
 #include <google/protobuf/message_lite.h>
-
-#include <fildesh/fildesh.h>
 
 using google::protobuf::Descriptor;
 using google::protobuf::DescriptorDatabase;
@@ -24,7 +25,7 @@ static
 PopulateSingleSimpleDescriptorDatabase(const std::string& filename)
 {
   FileDescriptorSet fdset;
-  std::ifstream in(filename, std::ios::in | std::ios::binary);
+  fildesh::ifstream in(filename);
   if (!fdset.ParseFromIstream(&in)) {
     std::cerr << "Cannot parse descriptor set file: " << filename << std::endl;
     return nullptr;

@@ -1,5 +1,11 @@
 load("@rules_proto//proto:defs.bzl", "proto_library")
-load("//sxproto:defs.bzl", "sxproto_data", "textproto_data", "protobuf_equality_test")
+load(
+    "//sxproto:defs.bzl",
+    "sxproto_data", "data_sxproto",
+    "json_data", "data_json", "data_json_camelcase",
+    "data_textproto", "textproto_data",
+    "protobuf_equality_test",
+)
 
 proto_library(
     name = "boolexpr_proto",
@@ -10,6 +16,8 @@ proto_library(
 sxproto_data(
     name = "boolexpr_sxproto_data",
     src = "boolexpr.sxproto",
+    out_json = "boolexpr_sxproto_data.json",
+    out_textproto = "boolexpr_sxproto_data.textproto",
     proto_deps = [":boolexpr_proto"],
     proto_message = "sxproto.test.manyof.BooleanExpressionList",
     testonly = 1,
@@ -18,6 +26,14 @@ sxproto_data(
 textproto_data(
     name = "boolexpr_textproto_data",
     src = "boolexpr.textproto",
+    proto_deps = [":boolexpr_proto"],
+    proto_message = "sxproto.test.manyof.BooleanExpressionList",
+    testonly = 1,
+)
+
+json_data(
+    name = "boolexpr_json_data",
+    src = "boolexpr.json",
     proto_deps = [":boolexpr_proto"],
     proto_message = "sxproto.test.manyof.BooleanExpressionList",
     testonly = 1,
@@ -37,6 +53,71 @@ protobuf_equality_test(
     name = "boolexpr_textproto_equality_test",
     srcs = [
         "boolexpr.textproto",
+        ":boolexpr_sxproto_data",
+    ],
+    proto_deps = [":boolexpr_proto"],
+    proto_message = "sxproto.test.manyof.BooleanExpressionList",
+)
+
+protobuf_equality_test(
+    name = "boolexpr_json_equality_test",
+    srcs = [
+        "boolexpr.json",
+        ":boolexpr_sxproto_data",
+    ],
+    proto_deps = [":boolexpr_proto"],
+    proto_message = "sxproto.test.manyof.BooleanExpressionList",
+)
+
+
+data_sxproto(
+    name = "boolexpr_data_sxproto",
+    src = ":boolexpr_sxproto_data",
+    proto_deps = [":boolexpr_proto"],
+    proto_message = "sxproto.test.manyof.BooleanExpressionList",
+    testonly = 1,
+)
+
+data_textproto(
+    name = "boolexpr_data_textproto",
+    src = ":boolexpr_sxproto_data",
+    proto_deps = [":boolexpr_proto"],
+    proto_message = "sxproto.test.manyof.BooleanExpressionList",
+    testonly = 1,
+)
+
+data_json(
+    name = "boolexpr_data_json",
+    src = ":boolexpr_sxproto_data",
+    proto_deps = [":boolexpr_proto"],
+    proto_message = "sxproto.test.manyof.BooleanExpressionList",
+    testonly = 1,
+)
+
+protobuf_equality_test(
+    name = "boolexpr_data_sxproto_equality_test",
+    srcs = [
+        ":boolexpr_data_sxproto",
+        ":boolexpr_textproto_data",
+    ],
+    proto_deps = [":boolexpr_proto"],
+    proto_message = "sxproto.test.manyof.BooleanExpressionList",
+)
+
+protobuf_equality_test(
+    name = "boolexpr_data_textproto_equality_test",
+    srcs = [
+        ":boolexpr_data_textproto",
+        ":boolexpr_sxproto_data",
+    ],
+    proto_deps = [":boolexpr_proto"],
+    proto_message = "sxproto.test.manyof.BooleanExpressionList",
+)
+
+protobuf_equality_test(
+    name = "boolexpr_data_json_equality_test",
+    srcs = [
+        ":boolexpr_data_json",
         ":boolexpr_sxproto_data",
     ],
     proto_deps = [":boolexpr_proto"],

@@ -16,6 +16,16 @@ alias(
 )
 
 alias(
+    name = "binaryproto2sxproto",
+    actual = "//src:binaryproto2sxproto",
+)
+
+alias(
+    name = "binaryproto2textproto",
+    actual = "//src:binaryproto2textproto",
+)
+
+alias(
     name = "diffprotobuf",
     actual = "//src:diffprotobuf",
 )

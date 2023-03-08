@@ -127,3 +127,43 @@ new_message_from_json_file(
   return new_message_from_json_content(*in_content, message_name, schemae);
 }
 
+  bool
+write_message_to_json_file(
+    const std::string& out_filename,
+    const google::protobuf::Message& message,
+    bool camelcase)
+{
+  using google::protobuf::util::JsonPrintOptions;
+  using google::protobuf::util::MessageToJsonString;
+  // Encode.
+  std::string out_content;
+  JsonPrintOptions json_options;
+  json_options.preserve_proto_field_names = !camelcase;
+  google::protobuf::util::Status status = MessageToJsonString(
+      message, &out_content, json_options);
+  if (!status.ok()) {
+    std::cerr << "Error encoding json." << std::endl;
+    return false;
+  }
+
+  // Write.
+  FildeshO* out = open_FildeshOF(out_filename.c_str());
+  if (!out) {
+    std::cerr << "Error opening output file: " << out_filename << std::endl;
+    return false;
+  }
+  put_bytestring_FildeshO(
+      out,
+      (const unsigned char*)out_content.data(),
+      out_content.size());
+  close_FildeshO(out);
+  return true;
+}
+
+  bool
+write_message_to_json_camelcase_file(
+    const std::string& out_filename,
+    const google::protobuf::Message& message)
+{
+  return write_message_to_json_file(out_filename, message, /*camelcase=*/true);
+}

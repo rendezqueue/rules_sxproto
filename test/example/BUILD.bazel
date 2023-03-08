@@ -1,5 +1,9 @@
 load("@fildesh//:def.bzl", "fildesh_test")
-load("//sxproto:defs.bzl", "sxproto_data", "protobuf_equality_test")
+load(
+    "//sxproto:defs.bzl",
+    "sxproto_data",
+    "protobuf_equality_test",
+)
 
 fildesh_test(
     name = "popcorn_nonempty_test",

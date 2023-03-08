@@ -26,6 +26,12 @@ cc_binary(
 )
 
 cc_binary(
+    name = "binaryproto2sxproto",
+    srcs = ["binaryproto2sxproto_main.cc"],
+    deps = [":protobuf_transcode_lib"],
+)
+
+cc_binary(
     name = "sxproto2textproto",
     srcs = [
         "sxproto2textproto_main.c",
@@ -44,6 +50,18 @@ cc_binary(
 )
 
 cc_binary(
+    name = "binaryproto2textproto",
+    srcs = ["binaryproto2textproto_main.cc"],
+    deps = [":protobuf_transcode_lib"],
+)
+
+cc_binary(
+    name = "json2binaryproto",
+    srcs = ["json2binaryproto.cc"],
+    deps = [":protobuf_transcode_lib"],
+)
+
+cc_binary(
     name = "binaryproto2json",
     srcs = ["binaryproto2json.cc"],
     deps = [":protobuf_transcode_lib"],
@@ -52,12 +70,6 @@ cc_binary(
 cc_binary(
     name = "binaryproto2json_camelcase",
     srcs = ["binaryproto2json_camelcase.cc"],
-    deps = [":protobuf_transcode_lib"],
-)
-
-cc_binary(
-    name = "json2binaryproto",
-    srcs = ["json2binaryproto.cc"],
     deps = [":protobuf_transcode_lib"],
 )
 

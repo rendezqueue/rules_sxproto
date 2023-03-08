@@ -23,7 +23,7 @@ class ProtobufSchemae {
   std::unique_ptr<google::protobuf::Message>
   new_message_from_binary_file(const std::string& filename,
                                const std::string& message_name);
-  static size_t
+  static bool
   write_message_to_binary_file(const std::string& filename,
                                const google::protobuf::Message& message);
 };

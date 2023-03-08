@@ -5,6 +5,7 @@
 
 #include <fildesh/fildesh.h>
 #include <fildesh/ifstream.hh>
+#include <fildesh/ofstream.hh>
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/descriptor.pb.h>
 #include <google/protobuf/message_lite.h>
@@ -99,47 +100,38 @@ ProtobufSchemae::new_message_from_binary_file(
     return nullptr;
   }
 
-  // Read.
-  FildeshX* in = open_FildeshXF(filename.c_str());
+  // Open.
+  fildesh::ifstream in(filename);
   if (!in) {
     std::cerr << "Cannot open input file: " << filename << std::endl;
     return nullptr;
   }
-  slurp_FildeshX(in);
-  const std::string in_content(in->at, in->size);
-  close_FildeshX(in);
 
-  // Parse.
-  if (!message->ParseFromString(in_content)) {
+  // Read & Parse.
+  if (!message->ParseFromIstream(&in)) {
     std::cerr << message->DebugString() << std::endl;
     return nullptr;
   }
   return message;
 }
 
-  size_t
+  bool
 ProtobufSchemae::write_message_to_binary_file(
     const std::string& filename,
     const google::protobuf::Message& message)
 {
-  // Encode.
-  std::string out_content;
-  if (!message.SerializeToString(&out_content)) {
-    std::cerr << "Error encoding binaryproto." << std::endl;
-    return 0;
-  }
-
-  // Write.
-  FildeshO* out = open_FildeshOF(filename.c_str());
+  // Open.
+  fildesh::ofstream out(filename);
   if (!out) {
     std::cerr << "Error opening output file: " << filename << std::endl;
-    return 0;
+    return false;
   }
-  put_bytestring_FildeshO(
-      out,
-      (const unsigned char*)out_content.data(),
-      out_content.size());
-  close_FildeshO(out);
-  return out_content.size();
+
+  // Encode & Write.
+  if (!message.SerializeToOstream(&out)) {
+    std::cerr << "Error encoding binaryproto." << std::endl;
+    return false;
+  }
+  return true;
 }
 

@@ -1,14 +1,7 @@
-#include <string>
 #include <iostream>
-#include <vector>
 
-#include <google/protobuf/util/json_util.h>
-
-#include <fildesh/fildesh.h>
 #include "protobuf_schemae.hh"
-
-using google::protobuf::Message;
-using google::protobuf::util::MessageToJsonString;
+#include "protobuf_transcode.hh"
 
 
 int main(int argc, char** argv) {
@@ -19,43 +12,26 @@ int main(int argc, char** argv) {
       << std::endl;
     return 64;
   }
-  const std::string message_name = argv[3];
 
   std::unique_ptr<ProtobufSchemae> schemae;
+  std::unique_ptr<google::protobuf::Message> message;
+
   schemae = ProtobufSchemae::from_descriptor_files(
       std::vector<std::string>(&argv[descriptor_index_offset], &argv[argc]));
-  if (!schemae) {
-    return 65;
+  if (schemae) {
+    // Read & Parse.
+    message = schemae->new_message_from_binary_file(argv[1], argv[3]);
   }
 
-  // Read & Parse.
-  std::unique_ptr<Message> message =
-    schemae->new_message_from_binary_file(argv[1], message_name);
-  if (!message) {
-    return 65;
+  int exstatus = 65;
+  if (message) {
+    exstatus = 74;
+    // Encode & Write.
+    if (write_message_to_json_camelcase_file(argv[2], *message)) {
+      exstatus = 0;
+    }
   }
-
-  // Encode.
-  std::string out_content;
-  google::protobuf::util::Status status = MessageToJsonString(
-      *message, &out_content);
-  if (!status.ok()) {
-    std::cerr << "Error encoding json." << std::endl;
-    return 74;
-  }
-
-  // Write.
-  FildeshO* out = open_FildeshOF(argv[2]);
-  if (!out) {
-    std::cerr << "Error opening output file: " << argv[2] << std::endl;
-    return 73;
-  }
-  put_bytestring_FildeshO(
-      out,
-      (const unsigned char*)out_content.data(),
-      out_content.size());
-  close_FildeshO(out);
 
   google::protobuf::ShutdownProtobufLibrary();
-  return 0;
+  return exstatus;
 }

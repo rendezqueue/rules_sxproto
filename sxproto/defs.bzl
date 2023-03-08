@@ -72,6 +72,22 @@ def _protobuf_transcode_impl(ctx):
       runfiles = ctx.runfiles(files = outfiles),
   )
 
+data_sxproto = rule(
+    implementation = _protobuf_transcode_impl,
+    attrs = _PROTOBUF_TRANSCODE_RULE_ATTRS | {
+        "_default_output_suffix": attr.string(
+            mandatory = False,
+            default = ".sxproto",
+        ),
+        "_transcode_protobuf": attr.label(
+            default = Label("//tool:binaryproto2sxproto"),
+            allow_single_file = True,
+            executable = True,
+            cfg = "exec",
+        ),
+    },
+)
+
 textproto_data = rule(
     implementation = _protobuf_transcode_impl,
     attrs = _PROTOBUF_TRANSCODE_RULE_ATTRS | {
@@ -81,6 +97,22 @@ textproto_data = rule(
         ),
         "_transcode_protobuf": attr.label(
             default = Label("//tool:textproto2binaryproto"),
+            allow_single_file = True,
+            executable = True,
+            cfg = "exec",
+        ),
+    },
+)
+
+data_textproto = rule(
+    implementation = _protobuf_transcode_impl,
+    attrs = _PROTOBUF_TRANSCODE_RULE_ATTRS | {
+        "_default_output_suffix": attr.string(
+            mandatory = False,
+            default = ".textproto",
+        ),
+        "_transcode_protobuf": attr.label(
+            default = Label("//tool:binaryproto2textproto"),
             allow_single_file = True,
             executable = True,
             cfg = "exec",

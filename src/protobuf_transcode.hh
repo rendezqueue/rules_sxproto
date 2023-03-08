@@ -26,4 +26,14 @@ new_message_from_json_file(
     const std::string& message_name,
     ProtobufSchemae& schemae);
 
+bool
+write_message_to_json_file(
+    const std::string& out_filename,
+    const google::protobuf::Message& message,
+    bool camelcase=false);
+bool
+write_message_to_json_camelcase_file(
+    const std::string& out_filename,
+    const google::protobuf::Message& message);
+
 #endif

@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
   int exstatus = 65;
   if (message) {
     exstatus = 74;
-    if (0 < schemae->write_message_to_binary_file(argv[2], *message)) {
+    if (schemae->write_message_to_binary_file(argv[2], *message)) {
       exstatus = 0;
     }
   }

@@ -242,7 +242,7 @@ sxproto_data = rule(
             doc = "The .json file to write with camelCase fields.",
         ),
         "_fildespawn": attr.label(
-            default = Label("@fildesh//:fildespawn"),
+            default = Label("@fildesh//tool:fildespawn"),
             allow_single_file = True,
             executable = True,
             cfg = "exec",

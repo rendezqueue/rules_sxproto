@@ -42,7 +42,7 @@ alias(
 
 alias(
     name = "sxproto2textproto",
-    actual = "//src:sxproto2textproto",
+    actual = "@fildesh//tool:sxproto2textproto",
 )
 
 alias(

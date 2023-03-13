@@ -1,10 +1,10 @@
 #include "protobuf_transcode.hh"
 
+#include <fildesh/sxproto.h>
 #include <google/protobuf/text_format.h>
 #include <google/protobuf/util/json_util.h>
 
 #include "protobuf_schemae.hh"
-#include "sxproto2textproto.h"
 
 using google::protobuf::Message;
 
@@ -85,8 +85,10 @@ new_message_from_sxproto_file(
 
   // Trancode to temporary textproto.
   FildeshO tmp_out[1] = {DEFAULT_FildeshO};
-  if (!sxproto2textproto(in, tmp_out)) {
+  FildeshO* err_out = open_FildeshOF("/dev/stderr");
+  if (!sxproto2textproto(in, tmp_out, err_out)) {
     close_FildeshO(tmp_out);
+    close_FildeshO(err_out);
     return nullptr;
   }
   // Input is closed at this point.
@@ -94,6 +96,7 @@ new_message_from_sxproto_file(
 
   const std::string in_content(tmp_out->at, tmp_out->size);
   close_FildeshO(tmp_out);
+  close_FildeshO(err_out);
 
   // Parse.
   return new_message_from_textproto_content(in_content, message_name, schemae);

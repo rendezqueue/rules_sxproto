@@ -25,4 +25,4 @@ jobs:
     - name: Upload Package Artifacts
       uses: ncipollo/release-action@v1
       with:
-        path: "${{runner.workspace}}/bld/pkg/final/*"
+        artifacts: "${{runner.workspace}}/bld/pkg/final/*"

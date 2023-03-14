@@ -1,0 +1,28 @@
+---
+name: Release on GitHub
+
+on:
+  push:
+    tags:
+    - 'v*.*.*'
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Package source
+      working-directory: ${{runner.workspace}}
+      run: >
+        $GITHUB_WORKSPACE/pkg/source/workflow_stage.sh
+        $GITHUB_WORKSPACE
+        ${{runner.workspace}}/bld/pkg/final
+
+    - name: Upload Package Artifacts
+      uses: ncipollo/release-action@v1
+      with:
+        path: "${{runner.workspace}}/bld/pkg/final/*"

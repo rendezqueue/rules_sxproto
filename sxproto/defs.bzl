@@ -74,7 +74,7 @@ def _protobuf_transcode_impl(ctx):
 
 data_sxproto = rule(
     implementation = _protobuf_transcode_impl,
-    attrs = _PROTOBUF_TRANSCODE_RULE_ATTRS | {
+    attrs = dict(_PROTOBUF_TRANSCODE_RULE_ATTRS, **{
         "_default_output_suffix": attr.string(
             mandatory = False,
             default = ".sxproto",
@@ -85,12 +85,12 @@ data_sxproto = rule(
             executable = True,
             cfg = "exec",
         ),
-    },
+    }),
 )
 
 textproto_data = rule(
     implementation = _protobuf_transcode_impl,
-    attrs = _PROTOBUF_TRANSCODE_RULE_ATTRS | {
+    attrs = dict(_PROTOBUF_TRANSCODE_RULE_ATTRS, **{
         "_default_output_suffix": attr.string(
             mandatory = False,
             default = ".binaryproto",
@@ -101,12 +101,12 @@ textproto_data = rule(
             executable = True,
             cfg = "exec",
         ),
-    },
+    }),
 )
 
 data_textproto = rule(
     implementation = _protobuf_transcode_impl,
-    attrs = _PROTOBUF_TRANSCODE_RULE_ATTRS | {
+    attrs = dict(_PROTOBUF_TRANSCODE_RULE_ATTRS, **{
         "_default_output_suffix": attr.string(
             mandatory = False,
             default = ".textproto",
@@ -117,12 +117,12 @@ data_textproto = rule(
             executable = True,
             cfg = "exec",
         ),
-    },
+    }),
 )
 
 json_data = rule(
     implementation = _protobuf_transcode_impl,
-    attrs = _PROTOBUF_TRANSCODE_RULE_ATTRS | {
+    attrs = dict(_PROTOBUF_TRANSCODE_RULE_ATTRS, **{
         "_default_output_suffix": attr.string(
             mandatory = False,
             default = ".binaryproto",
@@ -133,12 +133,12 @@ json_data = rule(
             executable = True,
             cfg = "exec",
         ),
-    },
+    }),
 )
 
 data_json = rule(
     implementation = _protobuf_transcode_impl,
-    attrs = _PROTOBUF_TRANSCODE_RULE_ATTRS | {
+    attrs = dict(_PROTOBUF_TRANSCODE_RULE_ATTRS, **{
         "_default_output_suffix": attr.string(
             mandatory = False,
             default = ".json",
@@ -149,12 +149,12 @@ data_json = rule(
             executable = True,
             cfg = "exec",
         ),
-    },
+    }),
 )
 
 data_json_camelcase = rule(
     implementation = _protobuf_transcode_impl,
-    attrs = _PROTOBUF_TRANSCODE_RULE_ATTRS | {
+    attrs = dict(_PROTOBUF_TRANSCODE_RULE_ATTRS, **{
         "_default_output_suffix": attr.string(
             mandatory = False,
             default = ".json",
@@ -165,7 +165,7 @@ data_json_camelcase = rule(
             executable = True,
             cfg = "exec",
         ),
-    },
+    }),
 )
 
 
@@ -224,7 +224,7 @@ def _sxproto_data_impl(ctx):
 
 sxproto_data = rule(
     implementation = _sxproto_data_impl,
-    attrs = _PROTOBUF_TRANSCODE_RULE_ATTRS | {
+    attrs = dict(_PROTOBUF_TRANSCODE_RULE_ATTRS, **{
         "_default_output_suffix": attr.string(
             mandatory = False,
             default = ".binaryproto",
@@ -277,7 +277,7 @@ sxproto_data = rule(
             executable = True,
             cfg = "exec",
         ),
-    },
+    }),
 )
 
 

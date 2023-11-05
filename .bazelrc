@@ -1,7 +1,6 @@
 # Bzlmod for dependencies.
 common --experimental_enable_bzlmod
-common --registry=https://raw.githubusercontent.com/fildesh/fildesh_bazel_registry/trunk
-common --registry=https://raw.githubusercontent.com/bazelbuild/bazel-central-registry/main
+common --registry=https://raw.githubusercontent.com/ProtocolConvergence/downstream-bazel-registry/main
 
 # --enable_runfiles is for Windows tests to access data deps.
 # Other platforms have it on by default; no harm making it explicit.

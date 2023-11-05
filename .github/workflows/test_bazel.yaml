@@ -28,7 +28,7 @@ jobs:
       run: bazel --version
 
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Build
       run: bazel build --disk_cache ~/.cache/bazel //...
@@ -71,7 +71,7 @@ jobs:
         bazel-version: '6'
 
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Build
       run: >

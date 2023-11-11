@@ -21,23 +21,6 @@ fildesh_test(
     },
 )
 
-sxproto_data(
-    name = "sauces_repeated_data",
-    src = "sauces_repeated.sxproto",
-    proto_deps = ["//example:grocery_proto"],
-    proto_message = "GroceryList",
-)
-
-# This is a binary comparison.
-fildesh_test(
-    name = "compare_repeated_test",
-    srcs = ["compare_repeated_test.fildesh"],
-    named_inputs = {
-        "expect_filename": "//example:sauces_data",
-        "result_filename": "sauces_repeated_data",
-    },
-)
-
 fildesh_test(
     name = "protoc_textproto_test",
     srcs = ["protoc_textproto_test.fildesh"],
@@ -47,7 +30,7 @@ fildesh_test(
     },
     named_inputs = {
         "binaryproto_filename": "//example:sauces_data",
-        "textproto_filename": "sauces.textproto",
+        "textproto_filename": "sauces.txtpb",
         "descriptor_set_filename": "//example:grocery_proto",
     },
 )
@@ -55,7 +38,7 @@ fildesh_test(
 protobuf_equality_test(
     name = "sauces_textproto_equality_test",
     srcs = [
-        "//example:sauces_data.textproto",
+        "//example:sauces_data.txtpb",
         "//example:sauces_data",
     ],
     proto_deps = ["//example:grocery_proto"],
@@ -66,7 +49,7 @@ protobuf_equality_test(
     name = "sauces_json_equality_test",
     srcs = [
         "//example:sauces_data.json",
-        "//example:sauces.sxproto",
+        "//example:sauces.sxpb",
     ],
     proto_deps = ["//example:grocery_proto"],
     proto_message = "GroceryList",
@@ -76,7 +59,7 @@ protobuf_equality_test(
     name = "sauces_json_camelcase_equality_test",
     srcs = [
         "//example:sauces_data_camelcase.json",
-        "//example:sauces.sxproto",
+        "//example:sauces.sxpb",
     ],
     proto_deps = ["//example:grocery_proto"],
     proto_message = "GroceryList",
@@ -85,8 +68,8 @@ protobuf_equality_test(
 protobuf_equality_test(
     name = "repeated_textproto_equality_test",
     srcs = [
-        "sauces_repeated.textproto",
-        ":sauces_repeated_data",
+        "sauces_repeated.txtpb",
+        "//example:sauces_data",
     ],
     proto_deps = ["//example:grocery_proto"],
     proto_message = "GroceryList",

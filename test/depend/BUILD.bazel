@@ -16,8 +16,8 @@ cc_proto_library(
 
 sxproto_data(
     name = "shopping_data",
-    src = "shopping.sxproto",
-    out_textproto = "shopping_data.textproto",
+    src = "shopping.sxpb",
+    out_textproto = "shopping_data.txtpb",
     proto_deps = [":shopping_proto"],
     proto_message = "sxproto.test.depend.ShoppingList",
     testonly = 1,
@@ -35,7 +35,7 @@ cc_test(
 protobuf_equality_test(
     name = "shopping_textproto_equality_test",
     srcs = [
-        "shopping_data.textproto",
+        "shopping_data.txtpb",
         "shopping_data",
     ],
     proto_deps = [":shopping_proto"],
@@ -51,7 +51,7 @@ proto_library(
 
 sxproto_data(
     name = "task_data",
-    src = "task.sxproto",
+    src = "task.sxpb",
     out_json = "task_data.json",
     proto_deps = [":task_proto"],
     proto_message = "sxproto.test.depend.TaskList",

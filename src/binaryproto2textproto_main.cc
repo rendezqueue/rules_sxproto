@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include <fildesh/ofstream.hh>
+#include <fildesh/ostream.hh>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <google/protobuf/text_format.h>
 
@@ -15,7 +15,7 @@ write_message_to_textproto_file(
 {
   using google::protobuf::TextFormat;
   // Open.
-  fildesh::ofstream out(out_filename);
+  fildesh::ofstream out(out_filename.c_str());
   if (!out) {
     std::cerr << "Error opening output file: " << out_filename << std::endl;
     return false;

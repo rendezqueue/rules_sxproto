@@ -12,31 +12,25 @@ proto_library(
 
 sxproto_data(
     name = "intro_1_scalar",
-    src = "intro_1_scalar.sxproto",
+    src = "intro_1_scalar.sxpb",
     proto_deps = ["intro_proto"],
     proto_message = "IntroMessage",
 )
 sxproto_data(
     name = "intro_2_message",
-    src = "intro_2_message.sxproto",
+    src = "intro_2_message.sxpb",
     proto_deps = ["intro_proto"],
     proto_message = "IntroMessage",
 )
 sxproto_data(
     name = "intro_3_empty_message",
-    src = "intro_3_empty_message.sxproto",
-    proto_deps = ["intro_proto"],
-    proto_message = "IntroMessage",
-)
-sxproto_data(
-    name = "intro_4_repeated",
-    src = "intro_4_repeated.sxproto",
+    src = "intro_3_empty_message.sxpb",
     proto_deps = ["intro_proto"],
     proto_message = "IntroMessage",
 )
 sxproto_data(
     name = "intro_5_array",
-    src = "intro_5_array.sxproto",
+    src = "intro_5_array.sxpb",
     proto_deps = ["intro_proto"],
     proto_message = "IntroMessage",
 )
@@ -49,15 +43,15 @@ proto_library(
 
 sxproto_data(
     name = "popcorn_data",
-    src = "popcorn.sxproto",
+    src = "popcorn.sxpb",
     proto_deps = ["grocery_proto"],
     proto_message = "GroceryListItem",
 )
 
 sxproto_data(
     name = "sauces_data",
-    src = "sauces.sxproto",
-    out_textproto = "sauces_data.textproto",
+    src = "sauces.sxpb",
+    out_textproto = "sauces_data.txtpb",
     out_json = "sauces_data.json",
     out_json_camelcase = "sauces_data_camelcase.json",
     proto_deps = ["grocery_proto"],
@@ -65,6 +59,6 @@ sxproto_data(
 )
 
 exports_files([
-    "popcorn.sxproto",
-    "sauces.sxproto",
+    "popcorn.sxpb",
+    "sauces.sxpb",
 ])

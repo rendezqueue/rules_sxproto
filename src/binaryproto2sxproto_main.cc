@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include <fildesh/ofstream.hh>
+#include <fildesh/ostream.hh>
 #include <google/protobuf/text_format.h>
 
 #include "protobuf_schemae.hh"
@@ -72,7 +72,7 @@ write_message_to_sxproto_file(
     const google::protobuf::Message& message)
 {
   // Open.
-  fildesh::ofstream out(out_filename);
+  fildesh::ofstream out(out_filename.c_str());
   if (!out) {
     std::cerr << "Error opening output file: " << out_filename << std::endl;
     return false;

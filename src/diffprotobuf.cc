@@ -24,10 +24,10 @@ new_message_from_file(
     const std::string& message_name,
     ProtobufSchemae& schemae)
 {
-  if (str_ends_with(in_filename, ".sxproto")) {
+  if (str_ends_with(in_filename, ".sxpb")) {
     return new_message_from_sxproto_file(in_filename, message_name, schemae);
   }
-  if (str_ends_with(in_filename, ".textproto")) {
+  if (str_ends_with(in_filename, ".txtpb")) {
     return new_message_from_textproto_file(in_filename, message_name, schemae);
   }
   if (str_ends_with(in_filename, ".json")) {

@@ -77,7 +77,7 @@ data_sxproto = rule(
     attrs = dict(_PROTOBUF_TRANSCODE_RULE_ATTRS, **{
         "_default_output_suffix": attr.string(
             mandatory = False,
-            default = ".sxproto",
+            default = ".sxpb",
         ),
         "_transcode_protobuf": attr.label(
             default = Label("//tool:binaryproto2sxproto"),
@@ -93,7 +93,7 @@ textproto_data = rule(
     attrs = dict(_PROTOBUF_TRANSCODE_RULE_ATTRS, **{
         "_default_output_suffix": attr.string(
             mandatory = False,
-            default = ".binaryproto",
+            default = ".binpb",
         ),
         "_transcode_protobuf": attr.label(
             default = Label("//tool:textproto2binaryproto"),
@@ -109,7 +109,7 @@ data_textproto = rule(
     attrs = dict(_PROTOBUF_TRANSCODE_RULE_ATTRS, **{
         "_default_output_suffix": attr.string(
             mandatory = False,
-            default = ".textproto",
+            default = ".txtpb",
         ),
         "_transcode_protobuf": attr.label(
             default = Label("//tool:binaryproto2textproto"),
@@ -125,7 +125,7 @@ json_data = rule(
     attrs = dict(_PROTOBUF_TRANSCODE_RULE_ATTRS, **{
         "_default_output_suffix": attr.string(
             mandatory = False,
-            default = ".binaryproto",
+            default = ".binpb",
         ),
         "_transcode_protobuf": attr.label(
             default = Label("//tool:json2binaryproto"),
@@ -169,8 +169,24 @@ data_json_camelcase = rule(
 )
 
 
+def _run_sxpb2json(ctx, sxpb_file, json_file):
+  """Translate .sxpb file to .json file."""
+  args = ctx.actions.args()
+  args.add_joined(["stdin=open_readonly", sxpb_file], join_with = ":")
+  args.add_joined(["stdout=open_writeonly", json_file], join_with = ":")
+  args.add("--")
+  args.add(ctx.executable._sxpb2json)
+  ctx.actions.run(
+      executable = ctx.executable._fildespawn,
+      arguments = [args],
+      inputs = [sxpb_file],
+      outputs = [json_file],
+      tools = [ctx.executable._sxpb2json],
+  )
+  return [json_file]
+
 def _run_sxproto2textproto(ctx, sxproto_file, textproto_file):
-  """Translate .sxproto file to .textproto file."""
+  """Translate .sxproto file to .txtpb file."""
   args = ctx.actions.args()
   args.add_joined(["stdin=open_readonly", sxproto_file], join_with = ":")
   args.add_joined(["stdout=open_writeonly", textproto_file], join_with = ":")
@@ -206,10 +222,8 @@ def _sxproto_data_impl(ctx):
         ctx.attr.proto_message, descriptor_set_depset)
 
   if ctx.outputs.out_json:
-    outfiles += _run_protobuf_transcode(
-        ctx, ctx.executable._binaryproto2json,
-        binaryproto_file, ctx.outputs.out_json,
-        ctx.attr.proto_message, descriptor_set_depset)
+    outfiles += _run_sxpb2json(
+        ctx, ctx.file.src, ctx.outputs.out_json)
 
   if ctx.outputs.out_json_camelcase:
     outfiles += _run_protobuf_transcode(
@@ -227,11 +241,11 @@ sxproto_data = rule(
     attrs = dict(_PROTOBUF_TRANSCODE_RULE_ATTRS, **{
         "_default_output_suffix": attr.string(
             mandatory = False,
-            default = ".binaryproto",
+            default = ".binpb",
         ),
         "out_textproto": attr.output(
             mandatory = False,
-            doc = "The .textproto file to write.",
+            doc = "The .txtpb file to write.",
         ),
         "out_json": attr.output(
             mandatory = False,
@@ -253,8 +267,14 @@ sxproto_data = rule(
             executable = True,
             cfg = "exec",
         ),
+        "_sxpb2json": attr.label(
+            default = Label("//tool:sxpb2json"),
+            allow_single_file = True,
+            executable = True,
+            cfg = "exec",
+        ),
         "_sxproto2textproto": attr.label(
-            default = Label("//tool:sxproto2textproto"),
+            default = Label("//tool:sxpb2txtpb"),
             allow_single_file = True,
             executable = True,
             cfg = "exec",
@@ -290,8 +310,7 @@ def protobuf_equality_test(
 
   srcs_fail_text = (
       "The srcs arg must be a list of exactly 2 protobuf data files " +
-      "formatted as any combination of: sxproto, textproto, " +
-      "json, or binaryproto.")
+      "formatted as any combination of: sxpb, txtpb, json, or binpb.")
   if type(srcs) != type([]) or len(srcs) != 2:
     fail(srcs_fail_text)
 

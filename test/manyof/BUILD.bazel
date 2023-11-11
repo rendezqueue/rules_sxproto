@@ -15,9 +15,9 @@ proto_library(
 
 sxproto_data(
     name = "boolexpr_sxproto_data",
-    src = "boolexpr.sxproto",
+    src = "boolexpr.sxpb",
     out_json = "boolexpr_sxproto_data.json",
-    out_textproto = "boolexpr_sxproto_data.textproto",
+    out_textproto = "boolexpr_sxproto_data.txtpb",
     proto_deps = [":boolexpr_proto"],
     proto_message = "sxproto.test.manyof.BooleanExpressionList",
     testonly = 1,
@@ -25,7 +25,7 @@ sxproto_data(
 
 textproto_data(
     name = "boolexpr_textproto_data",
-    src = "boolexpr.textproto",
+    src = "boolexpr.txtpb",
     proto_deps = [":boolexpr_proto"],
     proto_message = "sxproto.test.manyof.BooleanExpressionList",
     testonly = 1,
@@ -42,7 +42,7 @@ json_data(
 protobuf_equality_test(
     name = "boolexpr_sxproto_equality_test",
     srcs = [
-        "boolexpr.sxproto",
+        "boolexpr.sxpb",
         ":boolexpr_textproto_data",
     ],
     proto_deps = [":boolexpr_proto"],
@@ -52,7 +52,7 @@ protobuf_equality_test(
 protobuf_equality_test(
     name = "boolexpr_textproto_equality_test",
     srcs = [
-        "boolexpr.textproto",
+        "boolexpr.txtpb",
         ":boolexpr_sxproto_data",
     ],
     proto_deps = [":boolexpr_proto"],

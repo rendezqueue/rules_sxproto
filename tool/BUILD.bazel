@@ -41,8 +41,13 @@ alias(
 )
 
 alias(
-    name = "sxproto2textproto",
-    actual = "@fildesh//tool:sxproto2textproto",
+    name = "sxpb2json",
+    actual = "@fildesh//tool:sxpb2json",
+)
+
+alias(
+    name = "sxpb2txtpb",
+    actual = "@fildesh//tool:sxpb2txtpb",
 )
 
 alias(

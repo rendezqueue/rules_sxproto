@@ -1,11 +1,9 @@
 #include "protobuf_schemae.hh"
 
-#include <fstream>
 #include <iostream>
 
-#include <fildesh/fildesh.h>
-#include <fildesh/ifstream.hh>
-#include <fildesh/ofstream.hh>
+#include <fildesh/istream.hh>
+#include <fildesh/ostream.hh>
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/descriptor.pb.h>
 #include <google/protobuf/message_lite.h>
@@ -26,7 +24,7 @@ static
 PopulateSingleSimpleDescriptorDatabase(const std::string& filename)
 {
   FileDescriptorSet fdset;
-  fildesh::ifstream in(filename);
+  fildesh::ifstream in(filename.c_str());
   if (!fdset.ParseFromIstream(&in)) {
     std::cerr << "Cannot parse descriptor set file: " << filename << std::endl;
     return nullptr;
@@ -101,7 +99,7 @@ ProtobufSchemae::new_message_from_binary_file(
   }
 
   // Open.
-  fildesh::ifstream in(filename);
+  fildesh::ifstream in(filename.c_str());
   if (!in) {
     std::cerr << "Cannot open input file: " << filename << std::endl;
     return nullptr;
@@ -121,7 +119,7 @@ ProtobufSchemae::write_message_to_binary_file(
     const google::protobuf::Message& message)
 {
   // Open.
-  fildesh::ofstream out(filename);
+  fildesh::ofstream out(filename.c_str());
   if (!out) {
     std::cerr << "Error opening output file: " << filename << std::endl;
     return false;

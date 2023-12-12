@@ -1,4 +1,4 @@
-load("@fildesh//:def.bzl", _spawn_test = "spawn_test")
+load("@fildesh//tool/bazel:spawn_test.bzl", _spawn_test = "spawn_test")
 load("@rules_proto//proto:defs.bzl", _proto_descriptor_set = "proto_descriptor_set")
 
 # Attributes common to protobuf transcode rules.

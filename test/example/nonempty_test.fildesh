@@ -1,5 +1,5 @@
-zec -o $(OF empty) / /
-zec -o $(OF result) -x $(XA result_filename)
 
-$(O? status) cmp $(XF empty) $(XF result)
+(: result Filename .self.opt.result_file)
+
+$(O? status) cmp $(XOF result)
 expect_failure -x? $(XF status)

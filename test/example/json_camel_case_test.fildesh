@@ -1,5 +1,8 @@
-|< zec -x $(XA json_filename)
+
+(: json Filename .self.opt.json_file)
+
+|< zec / / $(XOF json)
 |- replace_string expectUnitCost FOUND_CAMEL_CASE
-|> cmp - $(XA json_filename) $(O? status)
+|> cmp $(XOF json) $(O? status)
 
 expect_failure -x? $(XF status)

@@ -1,5 +1,7 @@
 #include "protobuf_transcode.hh"
 
+#include <fildesh/ostream.hh>
+#include <fildesh/string.hh>
 #include <fildesh/sxproto.h>
 #include <google/protobuf/text_format.h>
 #include <google/protobuf/util/json_util.h>
@@ -10,23 +12,8 @@ using google::protobuf::Message;
 
 
 static
-  std::unique_ptr<std::string>
-slurp_file(const std::string& in_filename)
-{
-  FildeshX* in = open_FildeshXF(in_filename.c_str());
-  if (!in) {
-    std::cerr << "Cannot open input file: " << in_filename << std::endl;
-    return nullptr;
-  }
-  slurp_FildeshX(in);
-  std::unique_ptr<std::string> in_content(new std::string(in->at, in->size));
-  close_FildeshX(in);
-  return in_content;
-}
-
-static
   std::unique_ptr<Message>
-new_message_from_textproto_content(
+new_message_from_txtpb_content(
     const std::string& in_content,
     const std::string& message_name,
     ProtobufSchemae& schemae)
@@ -38,10 +25,10 @@ new_message_from_textproto_content(
     return nullptr;
   }
 
-  TextFormat::Parser textproto_parser;
-  textproto_parser.AllowFieldNumber(true);
-  if (!textproto_parser.ParseFromString(in_content, message.get())) {
-    std::cerr << "Error parsing textproto." << std::endl;
+  TextFormat::Parser txtpb_parser;
+  txtpb_parser.AllowFieldNumber(true);
+  if (!txtpb_parser.ParseFromString(in_content, message.get())) {
+    std::cerr << "Error parsing txtpb." << std::endl;
     return nullptr;
   }
   return message;
@@ -83,23 +70,16 @@ new_message_from_sxproto_file(
     return nullptr;
   }
 
-  // Trancode to temporary textproto.
-  FildeshO tmp_out[1] = {DEFAULT_FildeshO};
-  FildeshO* err_out = open_FildeshOF("/dev/stderr");
-  if (!sxproto2textproto(in, tmp_out, err_out)) {
-    close_FildeshO(tmp_out);
-    close_FildeshO(err_out);
-    return nullptr;
-  }
-  // Input is closed at this point.
-  in = NULL;
-
-  const std::string in_content(tmp_out->at, tmp_out->size);
-  close_FildeshO(tmp_out);
-  close_FildeshO(err_out);
+  // Transcode to temporary txtpb string.
+  fildesh::ofstream err_out("/dev/stderr");
+  FildeshSxpb* sxpb = slurp_sxpb_close_FildeshX(in, NULL, err_out.c_struct());
+  if (!sxpb) {return nullptr;}
+  fildesh::ostringstream oss;
+  print_txtpb_FildeshO(oss.c_struct(), sxpb);
+  close_FildeshSxpb(sxpb);
 
   // Parse.
-  return new_message_from_textproto_content(in_content, message_name, schemae);
+  return new_message_from_txtpb_content(oss.str(), message_name, schemae);
 }
 
   std::unique_ptr<Message>
@@ -109,11 +89,14 @@ new_message_from_textproto_file(
     ProtobufSchemae& schemae)
 {
   // Read.
-  const std::unique_ptr<std::string> in_content = slurp_file(in_filename);
-  if (!in_content) {return nullptr;}
+  std::string in_content;
+  if (!fildesh::slurp_file_to_string(in_content, in_filename.c_str())) {
+    std::cerr << "Cannot open input file: " << in_filename << std::endl;
+    return nullptr;
+  }
 
   // Parse.
-  return new_message_from_textproto_content(*in_content, message_name, schemae);
+  return new_message_from_txtpb_content(in_content, message_name, schemae);
 }
 
   std::unique_ptr<Message>
@@ -123,11 +106,14 @@ new_message_from_json_file(
     ProtobufSchemae& schemae)
 {
   // Read.
-  const std::unique_ptr<std::string> in_content = slurp_file(in_filename);
-  if (!in_content) {return nullptr;}
+  std::string in_content;
+  if (!fildesh::slurp_file_to_string(in_content, in_filename.c_str())) {
+    std::cerr << "Cannot open input file: " << in_filename << std::endl;
+    return nullptr;
+  }
 
   // Parse.
-  return new_message_from_json_content(*in_content, message_name, schemae);
+  return new_message_from_json_content(in_content, message_name, schemae);
 }
 
   bool

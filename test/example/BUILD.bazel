@@ -1,4 +1,4 @@
-load("@fildesh//:def.bzl", "fildesh_test")
+load("@fildesh//tool/bazel:fildesh_test.bzl", "fildesh_test")
 load(
     "//sxproto:defs.bzl",
     "sxproto_data",
@@ -8,30 +8,26 @@ load(
 fildesh_test(
     name = "popcorn_nonempty_test",
     srcs = ["nonempty_test.fildesh"],
-    named_inputs = {
-        "result_filename": "//example:popcorn_data",
-    },
+    input_by_option = {"result_file": "//example:popcorn_data"},
 )
 
 fildesh_test(
     name = "sauces_nonempty_test",
     srcs = ["nonempty_test.fildesh"],
-    named_inputs = {
-        "result_filename": "//example:sauces_data",
-    },
+    input_by_option = {"result_file": "//example:sauces_data"},
 )
 
 fildesh_test(
-    name = "protoc_textproto_test",
-    srcs = ["protoc_textproto_test.fildesh"],
-    aliases = {
+    name = "protoc_txtpb_test",
+    srcs = ["protoc_txtpb_test.fildesh"],
+    tool_by_alias = {
         "protoc": "@protobuf//:protoc",
         "diffprotobuf": "//tool:diffprotobuf",
     },
-    named_inputs = {
-        "binaryproto_filename": "//example:sauces_data",
-        "textproto_filename": "sauces.txtpb",
-        "descriptor_set_filename": "//example:grocery_proto",
+    input_by_option = {
+        "binpb_file": "//example:sauces_data",
+        "txtpb_file": "sauces.txtpb",
+        "descriptor_set_file": "//example:grocery_proto",
     },
 )
 
@@ -78,14 +74,10 @@ protobuf_equality_test(
 fildesh_test(
     name = "json_snake_case_test",
     srcs = ["json_snake_case_test.fildesh"],
-    named_inputs = {
-        "json_filename": "//example:sauces_data.json",
-    },
+    input_by_option = {"json_file": "//example:sauces_data.json"},
 )
 fildesh_test(
     name = "json_camel_case_test",
     srcs = ["json_camel_case_test.fildesh"],
-    named_inputs = {
-        "json_filename": "//example:sauces_data_camelcase.json",
-    },
+    input_by_option = {"json_file": "//example:sauces_data_camelcase.json"},
 )

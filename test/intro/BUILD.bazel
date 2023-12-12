@@ -1,4 +1,3 @@
-load("@fildesh//:def.bzl", "fildesh_test")
 load("//sxproto:defs.bzl", "protobuf_equality_test")
 
 protobuf_equality_test(

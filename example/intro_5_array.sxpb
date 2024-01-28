@@ -7,5 +7,5 @@
 ; An array of 3 messages.
 ((my_messages)
  (() (i 5))
- ()
+ (())
  (() (i 5) (f 5.5) (s "hello")))

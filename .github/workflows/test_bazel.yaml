@@ -20,7 +20,7 @@ jobs:
         key: ${{ runner.os }}-bazel
 
     - name: Bazel Setup
-      uses: jwlawson/actions-setup-bazel@v1
+      uses: jwlawson/actions-setup-bazel@v2
       with:
         bazel-version: '6'
 
@@ -66,7 +66,7 @@ jobs:
         key: ${{ runner.os }}-bazel
 
     - name: Bazel Setup
-      uses: jwlawson/actions-setup-bazel@v1
+      uses: jwlawson/actions-setup-bazel@v2
       with:
         bazel-version: '6'
 

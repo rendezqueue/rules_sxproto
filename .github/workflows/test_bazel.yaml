@@ -22,7 +22,7 @@ jobs:
     - name: Bazel Setup
       uses: jwlawson/actions-setup-bazel@v2
       with:
-        bazel-version: '6'
+        bazel-version: 'latest'
 
     - name: Bazel Version
       run: bazel --version

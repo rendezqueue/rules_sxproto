@@ -61,6 +61,6 @@ For simplicity, the "nonexistent field name" part is omitted for repeated scalar
 ; An array of messages.
 ((my_messages)
  (() (i 5))
- ()
+ (())
  (() (i 5) (f 5.5) (s "hello")))
 ```

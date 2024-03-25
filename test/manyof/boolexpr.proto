@@ -5,15 +5,11 @@ message BooleanExpressionOneof {
   oneof expression_union {
     bool value = 1;
     BooleanExpressionOneof not = 2;
-    BooleanExpressionManyof and = 3;
-    BooleanExpressionManyof or = 4;
-  };
-};
-
-message BooleanExpressionManyof {
-  repeated BooleanExpressionOneof values = 1;
-};
+  }
+  repeated BooleanExpressionOneof and = 3;
+  repeated BooleanExpressionOneof or = 4;
+}
 
 message BooleanExpressionList {
-  BooleanExpressionManyof expressions = 1;
-};
+  repeated BooleanExpressionOneof expressions = 1;
+}

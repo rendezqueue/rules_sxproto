@@ -12,5 +12,5 @@ bazel_dep(name = "rules_proto", version = "4.0.0")
 git_override(
     module_name = "fildesh",
     remote = "https://github.com/grencez/fildesh.git",
-    commit="f0841991085717aaeca83f09c41cd42ecf4abc34",
+    commit="29ef2da4a4c4aeda9c0af917b95fc2c493d4f96d",
 )

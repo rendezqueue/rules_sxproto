@@ -1,0 +1,22 @@
+syntax = "proto3";
+package sxproto.test.loneof;
+
+message Car {
+  bool rideshare = 1;
+}
+message Bus {
+  string name = 1;
+}
+
+message VehicleOneof {
+  oneof travel_union {
+    Car car = 1;
+    Bus bus = 2;
+  }
+}
+
+message Travel {
+  VehicleOneof commute_with = 1;
+  VehicleOneof joyride_with = 2;
+  VehicleOneof vacation_with = 3;
+}

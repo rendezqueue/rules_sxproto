@@ -1,0 +1,14 @@
+commute_with {
+  bus {
+    name: "muni"
+  }
+}
+joyride_with {
+  car {
+  }
+}
+vacation_with {
+  car {
+    rideshare: true
+  }
+}

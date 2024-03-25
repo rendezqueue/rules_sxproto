@@ -1,21 +1,19 @@
-expressions {
-    values: [{
-        value: true
-    }, {
-        value: true
-    }, {
-        not {value: false}
-    }, {
-        or {values: [{value: false}, {value: true}]}
-    }, {
-        or {values: [{value: false}, {value: true}]}
-    }, {
-        or {values: [{value: false}, {value: true}]}
-    }, {
-        or {values: [
-           {value: false},
-           {and {values: [{value: true}, {value: false}]}},
-           {or {values: [{value: false}, {value: false}, {value: true}]}}
-        ]}
-    }]
-}
+expressions: [{
+  value: true
+}, {
+    not {value: false}
+}, {
+  or: [{value: false}, {value: true}]
+}, {
+  or: [{value: false}, {value: true}]
+}, {
+  or: [{value: false}, {value: true}]
+}, {
+  or: [{
+    value: false
+  }, {
+    and: [{value: true}, {value: false}]
+  }, {
+    or: [{value: false}, {value: false}, {value: true}]
+  }]
+}]
